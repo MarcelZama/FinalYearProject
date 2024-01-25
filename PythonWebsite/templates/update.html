@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Node</title>
+</head>
+<body>
+    <h1>Update Node</h1>
+
+    <form method="POST" action="{{ url_for('update_node', node_name=node_name) }}">
+        <label for="floor">Floor:</label>
+        <input type="text" id="floor" name="floor" value="{{ node['Floor'] }}" required><br>
+
+        <label for="location_x">Location X:</label>
+        <input type="text" id="location_x" name="location_x" value="{{ node['LocationX'] }}" required><br>
+
+        <label for="location_y">Location Y:</label>
+        <input type="text" id="location_y" name="location_y" value="{{ node['LocationY'] }}" required><br>
+
+        <label for="room_nr">Room Nr:</label>
+        <input type="text" id="room_nr" name="room_nr" value="{{ node['RoomNr'] }}" required><br>
+
+        <label for="second_name">Second Name:</label>
+        <input type="text" id="second_name" name="second_name" value="{{ node['SecondName'] }}" required><br>
+
+        <button type="submit">Update Node</button>
+    </form>
+
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>

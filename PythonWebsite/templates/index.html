@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flask Firebase App</title>
     <style>
@@ -13,16 +14,16 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #f0f0f0; /* Choose your preferred background color */
+            background-color: #f0f0f0;
         }
 
         h1, p, ul, form {
             margin: 10px;
             text-align: center;
-            background-color: #ffffff; /* Choose your preferred background color */
+            background-color: #ffffff; 
             padding: 10px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle box shadow */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         form {
@@ -41,17 +42,85 @@
     </style>
 </head>
 <body>
-    <h1>Message from Firebase</h1>
+    <h1>Nodes Data</h1>
     
-    {% if message %}
-        <p>{{ message }}</p>
+    {% if nodes_data %}
+    {% if nodes_data | length > 0 %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">NodeID</th>
+                    <th style="text-align: center;">Floor</th>
+                    <th style="text-align: center;">LocationX</th>
+                    <th style="text-align: center;">LocationY</th>
+                    <th style="text-align: center;">RoomNr</th>
+                    <th style="text-align: center;">SecondName</th>
+                    <th style="text-align: center;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for node_id, node in nodes_data.items() %}
+                <tr>
+                    <td style="text-align: center;">{{ node_id }}</td>
+                
+                    <form action="/update/{{ node_id }}" method="post">
+                        <td><input class="form-control" type="text" name="floor" value="{{ node['Floor'] }}"></td>
+                        <td><input class="form-control" type="text" name="location_x" value="{{ node['LocationX'] }}"></td>
+                        <td><input class="form-control" type="text" name="location_y" value="{{ node['LocationY'] }}"></td>
+                        <td><input class="form-control" type="text" name="room_nr" value="{{ node['RoomNr'] }}"></td>
+                        <td><input class="form-control" type="text" name="second_name" value="{{ node['SecondName'] }}"></td>
+                        <!-- Add a hidden input for node_id -->
+                        <input type="hidden" name="node_id" value="{{ node['NodeID'] }}">
+                        <td>
+                            <button type="submit">Update</button>
+                        </td>
+                    </form>
+                
+                    <form action="/delete/{{ node_id|int }}" method="post">
+                        <td>
+                            <button type="submit">Delete</button>
+                        </td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     {% else %}
-        <p>No message available.</p>
+        <p>No nodes data available.</p>
     {% endif %}
+{% else %}
+    <p>No nodes data available.</p>
+{% endif %}
 
-    <form action="/submit" method="post">
-        <label for="message">Enter Message:</label>
-        <input type="text" name="message" id="message" required>
+
+    <p>Add New Node</p>
+
+    <form action="/submit" method="post" style="display: flex; flex-direction: column; align-items: center;">
+        <div>
+            <label for="floor">Floor:</label>
+            <input type="text" name="floor" id="floor" required>
+        </div>
+
+        <div>
+            <label for="location_x">LocationX:</label>
+            <input type="text" name="location_x" id="location_x" required>
+        </div>
+
+        <div>
+            <label for="location_y">LocationY:</label>
+            <input type="text" name="location_y" id="location_y" required>
+        </div>
+
+        <div>
+            <label for="room_nr">RoomNr:</label>
+            <input type="text" name="room_nr" id="room_nr" required>
+        </div>
+
+        <div>
+            <label for="second_name">SecondName:</label>
+            <input type="text" name="second_name" id="second_name" required>
+        </div>
+
         <button type="submit">Submit</button>
     </form>
 </body>
