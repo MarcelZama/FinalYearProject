@@ -13,9 +13,18 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://yearproject-4a736-default-rtdb.firebaseio.com/'
 })
 
+atstart = 0
+
 #/* -------------------------------------------------------------------------- */#
 #/*                                 Nodes Data                                 */#
 #/* -------------------------------------------------------------------------- */#
+
+@app.route('/')
+def first_page_select():
+    if atstart == 0:
+        return redirect('/nodes')
+    else:
+        return redirect('/connections')
 
 # Define the get_last_node_index() function
 def get_last_node_index():
@@ -31,7 +40,7 @@ def get_last_node_index():
         return 0
 
 # Define a route to render the main page
-@app.route('/')
+@app.route('/nodes')
 def index():
     # Read data from Firebase (assuming you have a 'Nodes' node)
     nodes_data = db.reference('Nodes').get()
@@ -80,7 +89,7 @@ def submit_form():
     })
 
     # Redirect to the main page or any other appropriate URL
-    return redirect('/')
+    return redirect('/nodes')
 
 # Define a route to handle node creation
 @app.route('/create', methods=['POST'])
@@ -109,7 +118,7 @@ def create_node():
         'RoomNr': room_nr,
         'SecondName': second_name
     })
-    return redirect('/')
+    return redirect('/nodes')
 
 # Define a route to handle node updates
 @app.route('/update/<string:node_id>', methods=['POST'])
@@ -131,7 +140,7 @@ def update_node(node_id):
     })
 
     # Redirect to the main page
-    return redirect('/')
+    return redirect('/nodes')
 
 # Define a route to handle node deletion
 @app.route('/delete/<int:node_id>', methods=['POST'])
@@ -139,12 +148,85 @@ def delete_node(node_id):
     # Update the data in the Firebase database to remove the node with the specified NodeID
     db.reference('Nodes').child(str(node_id)).delete()
 
-    return redirect('/')
+    return redirect('/nodes')
 
 #/* -------------------------------------------------------------------------- */#
 #/*                                 Connection                                 */#
 #/* -------------------------------------------------------------------------- */#
 
+# Define a route to render the main page for connections
+@app.route('/connections')
+def connections_page():
+    # Read data from Firebase (assuming you have a 'Connection' node)
+    connection_data = db.reference('Connection').get()
+
+    # Check if 'Connection' is not None
+    if connection_data is not None:
+        if isinstance(connection_data, list):
+            # Convert the list to a dictionary with index as key
+            connection_data = {str(index): connection for index, connection in enumerate(connection_data)}
+
+        return render_template('connections.html', connection_data=connection_data)
+    else:
+        # If 'Connection' is None, pass an empty dictionary to the template
+        return render_template('connections.html', connection_data={})
+    
+# Define a route to handle form submissions for connections
+@app.route('/submit_connection', methods=['POST'])
+def submit_connection_form():
+    # Get the last connection index directly from Firebase
+    connection_data = db.reference('Connection').get()
+    
+    if connection_data:
+        # Convert the list to a dictionary with indices as keys
+        connection_dict = {str(index + 1): connection for index, connection in enumerate(connection_data)}
+        last_connection_index = max([int(key) for key in connection_dict.keys()], default=0)
+    else:
+        last_connection_index = 0
+
+    # Create a new connection with an index one higher than the last one
+    new_connection_name = str(last_connection_index)
+
+    # Extract form data from the submitted form
+    start = request.form.get('start')
+    end = request.form.get('end')
+    weight = request.form.get('weight')
+
+    # Create a new connection in Firebase with the submitted data
+    db.reference('Connection').child(new_connection_name).set({
+        'start': start,
+        'end': end,
+        'weight': weight
+    })
+
+    # Redirect to the main page or any other appropriate URL
+    return redirect('/connections')
+
+# Define a route to handle connection updates
+@app.route('/update_connection/<string:connection_id>', methods=['POST'])
+def update_connection(connection_id):
+    # Extract form data from the submitted form
+    start = request.form.get('start')
+    end = request.form.get('end')
+    weight = request.form.get('weight')
+
+    # Update the existing connection with the submitted data
+    db.reference('Connection').child(connection_id).update({
+        'start': start,
+        'end': end,
+        'weight': weight
+    })
+
+    # Redirect to the main page
+    return redirect('/connections')
+
+# Define a route to handle connection deletion
+@app.route('/delete_connection/<int:connection_id>', methods=['POST'])
+def delete_connection(connection_id):
+    # Update the data in the Firebase database to remove the connection with the specified ConnectionID
+    db.reference('Connection').child(str(connection_id)).delete()
+
+    return redirect('/connections')
 
 if __name__ == '__main__':
     app.run(debug=True)

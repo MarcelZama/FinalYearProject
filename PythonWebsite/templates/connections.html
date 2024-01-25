@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Firebase App</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        h1, p, ul, form {
+            margin: 10px;
+            text-align: center;
+            background-color: #ffffff; 
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            margin-bottom: 5px;
+        }
+
+        input, button {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <a href="/nodes">
+        <button type="button">Go to Nodes</button>
+    </a>
+    <h1>Connection Data</h1>
+    
+    {% if connection_data %}
+    {% if connection_data | length > 0 %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">Connection ID</th>
+                    <th style="text-align: center;">Start</th>
+                    <th style="text-align: center;">End</th>
+                    <th style="text-align: center;">Weight</th>
+                    <th style="text-align: center;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for connection_id, connection in connection_data.items() %}
+                <tr>
+                    <td style="text-align: center;">{{ connection_id }}</td>
+                
+                    <form action="/update_connection/{{ connection_id }}" method="post">
+                        <td><input class="form-control" type="text" name="start" value="{{ connection['start'] }}"></td>
+                        <td><input class="form-control" type="text" name="end" value="{{ connection['end'] }}"></td>
+                        <td><input class="form-control" type="text" name="weight" value="{{ connection['weight'] }}"></td>
+                        <!-- Add a hidden input for connection_id -->
+                        <input type="hidden" name="connection_id" value="{{ connection_id }}">
+                        <td>
+                            <button type="submit">Update</button>
+                        </td>
+                    </form>
+                
+                    <form action="/delete_connection/{{ connection_id }}" method="post">
+                        <td>
+                            <button type="submit2">Delete</button>
+                        </td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No connection data available.</p>
+    {% endif %}
+{% else %}
+    <p>No connection data available.</p>
+{% endif %}
+
+<h2>Add New Connection</h2>
+<form action="/submit_connection" method="post">
+    <label for="start">Start:</label>
+    <input type="text" name="start" required>
+    <label for="end">End:</label>
+    <input type="text" name="end" required>
+    <label for="weight">Weight:</label>
+    <input type="text" name="weight" required>
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>
