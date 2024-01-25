@@ -1,11 +1,13 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 import firebase_admin
 from firebase_admin import credentials, db
 from flask import redirect
 import sys
 from flask import jsonify
+import secrets
 
 app = Flask(__name__)
+app.secret_key = secrets.token_urlsafe(16)
 
 # Initialize Firebase with your credentials
 cred = credentials.Certificate("yearproject-4a736-firebase-adminsdk-hdwrj-69bb4f7dae.json")
@@ -15,16 +17,63 @@ firebase_admin.initialize_app(cred, {
 
 atstart = 0
 
-#/* -------------------------------------------------------------------------- */#
-#/*                                 Nodes Data                                 */#
-#/* -------------------------------------------------------------------------- */#
-
 @app.route('/')
 def first_page_select():
     if atstart == 0:
-        return redirect('/nodes')
+        return redirect('/login')
     else:
+        return redirect('/nodes')
         return redirect('/connections')
+
+#/* -------------------------------------------------------------------------- */#
+#/*                                    LogIn                                   */#
+#/* -------------------------------------------------------------------------- */#
+    
+# Define a route for the login page
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username', '')
+        password = request.form.get('password', '')
+
+        # Check against Firebase credentials
+        if check_credentials(username, password):
+            session['logged_in'] = True
+            return redirect('/nodes')  # Redirect to the nodes page after successful login
+        else:
+            return render_template('login.html', error='Invalid username or password')
+
+    return render_template('login.html', error=None)
+
+# Function to check credentials against Firebase
+def check_credentials(username, password):
+    # Read data from Firebase (assuming you have a 'Credentials' node)
+    credentials_data = db.reference('Credentials').get()
+
+    print("Credentials Data:", credentials_data)
+    print("my login", username)
+    print("my password", password)
+
+    if credentials_data and 'LogIn' in credentials_data and 'Password' in credentials_data:
+        stored_login = credentials_data['LogIn'].strip()
+        stored_password = credentials_data['Password'].strip()
+
+        print("Stored Login:", stored_login)
+        print("Stored Password:", stored_password)
+
+        if stored_login == username and stored_password == password:
+            print("Authentication successful!")
+            return True
+        else:
+            print("Incorrect login or password.")
+    else:
+        print("Credentials not found in the database.")
+
+    return False
+
+#/* -------------------------------------------------------------------------- */#
+#/*                                 Nodes Data                                 */#
+#/* -------------------------------------------------------------------------- */#
 
 # Define the get_last_node_index() function
 def get_last_node_index():
