@@ -25,6 +25,15 @@ def first_page_select():
         return redirect('/nodes')
         return redirect('/connections')
 
+def is_logged_in():
+    return session.get('logged_in', False)
+
+# Use the before_request decorator to check if the user is logged in before each request
+@app.before_request
+def before_request():
+    if not is_logged_in() and request.endpoint not in ['login', 'first_page_select']:
+        return redirect('/login')
+    
 #/* -------------------------------------------------------------------------- */#
 #/*                                    LogIn                                   */#
 #/* -------------------------------------------------------------------------- */#
@@ -50,16 +59,9 @@ def check_credentials(username, password):
     # Read data from Firebase (assuming you have a 'Credentials' node)
     credentials_data = db.reference('Credentials').get()
 
-    print("Credentials Data:", credentials_data)
-    print("my login", username)
-    print("my password", password)
-
     if credentials_data and 'LogIn' in credentials_data and 'Password' in credentials_data:
         stored_login = credentials_data['LogIn'].strip()
         stored_password = credentials_data['Password'].strip()
-
-        print("Stored Login:", stored_login)
-        print("Stored Password:", stored_password)
 
         if stored_login == username and stored_password == password:
             print("Authentication successful!")
