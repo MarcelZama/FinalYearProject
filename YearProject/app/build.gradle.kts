@@ -39,7 +39,4 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    implementation ("it.sephiroth.android.library.imagezoom:imagezoom:latest_version")
-    implementation ("com.ablanco.zoomy:zoomy:latest_version")
-
 }

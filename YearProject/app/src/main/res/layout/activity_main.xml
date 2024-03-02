@@ -1,28 +1,108 @@
-<!-- res/layout/activity_main.xml -->
-
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingTop="16dp"
-    android:paddingRight="16dp"
-    android:paddingBottom="16dp"
+    android:background="@android:color/black"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/messageTextView"
+    <!-- DrawingView -->
+    <com.example.yearproject.DrawingView
+        android:id="@+id/drawingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/topLayout"
+        android:scaleType="centerInside" />
+
+    <!-- Top Layout -->
+    <LinearLayout
+        android:id="@+id/topLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:background="@color/purple"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <!-- EditText -->
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@color/lavender"
+            android:hint="GO TO ->"
+            android:paddingStart="12dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="8dp"
+            android:textColor="@android:color/black" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/submitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Submit"
+            android:background="@color/lavender"
+            android:textColor="@android:color/white"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+    <!-- Layout for Dynamically Added EditTexts -->
+    <LinearLayout
+        android:id="@+id/dynamicEditTextsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/topLayout"
+        android:layout_marginTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp" />
+
+    <!-- Layout for Buttons -->
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello, World!"
-        android:textSize="18sp"
-        android:layout_centerInParent="true" />
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp">
 
-    <ImageView
-        android:layout_width="220dp"
-        android:layout_height="220dp"
-        android:id="@+id/image_view"
-        android:src="@drawable/gftest"
-        android:layout_centerInParent="true">
-    </ImageView>
+        <!-- Button to Change Image 1 -->
+        <Button
+            android:id="@+id/buttonImage1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Floor 0"
+            android:onClick="changeImage1" />
+
+        <!-- Button to Change Image 2 -->
+        <Button
+            android:id="@+id/buttonImage2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Floor 1"
+            android:onClick="changeImage2"
+            android:layout_marginTop="16dp" />
+
+        <!-- Button to Change Image 3 -->
+        <Button
+            android:id="@+id/buttonImage3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Floor 2"
+            android:onClick="changeImage3"
+            android:layout_marginTop="16dp" />
+
+    </LinearLayout>
+
 </RelativeLayout>
