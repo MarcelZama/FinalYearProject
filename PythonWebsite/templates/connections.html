@@ -55,7 +55,8 @@
                     <th style="text-align: center;">Connection ID</th>
                     <th style="text-align: center;">Start</th>
                     <th style="text-align: center;">End</th>
-                    <th style="text-align: center;">Weight</th>
+                    <th style="text-align: center;">Distance</th>
+                    <th style="text-align: center;">Reversed</th>
                     <th style="text-align: center;">Action</th>
                 </tr>
             </thead>
@@ -68,6 +69,12 @@
                         <td><input class="form-control" type="text" name="start" value="{{ connection['start'] }}"></td>
                         <td><input class="form-control" type="text" name="end" value="{{ connection['end'] }}"></td>
                         <td><input class="form-control" type="text" name="weight" value="{{ connection['weight'] }}"></td>
+                        <td>
+                            <input type="radio" id="reversed_{{ connection_id }}_1" name="reversed" value="1" {% if connection['reversed'] == 1 %}checked{% endif %}>
+                            <label for="reversed_{{ connection_id }}_1">Yes</label>
+                            <input type="radio" id="reversed_{{ connection_id }}_0" name="reversed" value="0" {% if connection['reversed'] == 0 %}checked{% endif %}>
+                            <label for="reversed_{{ connection_id }}_0">No</label>
+                        </td>
                         <!-- Add a hidden input for connection_id -->
                         <input type="hidden" name="connection_id" value="{{ connection_id }}">
                         <td>
