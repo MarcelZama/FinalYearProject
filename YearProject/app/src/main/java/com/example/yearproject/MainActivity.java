@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         // Retrieve data from the specified branch ("Connection")
         database.getReference("Connection").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int totalSize = (int) dataSnapshot.getChildrenCount() + 1;
 
                 connectionsGraph = new Graph(totalSize);
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Handle errors
                 System.out.println("Failed to read value: " + databaseError.toException());
             }
