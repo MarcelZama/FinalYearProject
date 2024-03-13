@@ -52,12 +52,12 @@ public class MainActivity extends AppCompatActivity {
 
     // ---------------------------------------------------------------------------------------------------------\
 
-    // 3.4 Add autofill into the search bar
-    // 3.4.1 stop the algorithm from using the id ,use room nr and second name instead
+    // 3.4 Stop the algorithm from using the id ,use room nr and second name instead
+        // 3.4.1 Add autofill into the search bar
 
     // 4. Make the Final Version of Images for all 3 floors
-    // 4.1 Put the dots in place
-    // 4.1.1 Add the person.ico / stairs-down / stairs-up to their place
+    //      4.1 Put the dots in place
+    //          4.1.1 Add the person.ico / stairs-down / stairs-up to their place
 
 
     //Notes:
