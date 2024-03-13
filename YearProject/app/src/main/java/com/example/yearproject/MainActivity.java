@@ -39,16 +39,16 @@ public class MainActivity extends AppCompatActivity {
     // 2.4 Add Reverse Field for Connections // Done
         // 2.4.1 Read the field in the code and if not 1 then do not reverse. // Done
 
-    // 3. Modify the code to send you to the stairs if you have to go down or up the stairs.
-    // 3.1 Have to remember the way for floor 0/1/2
-    //      3.1.1 Maybe keep the path for each floor individually // Made an array for each floor
-    // 3.2 Maybe add stairs as a completely different type of Nodes
-    //      3.2.1 Stairs might need a new field availability
-    //          3.2.1.1 Availability --> one way system down one way system up or both ways
-    //              3.2.1.2 Maybe just add this to all the nodes ???   <--- in the connection add the both or single
-    // 3.3 Figure out how to make the algorithm choose the closest staircase
-    //      3.3.1 Maybe just make the algorithm calculate the distance to each staircase
-            //individually and choose the closest one to display
+    // 3. Modify the code to send you to the stairs if you have to go down or up the stairs. // Done
+    // 3.1 Have to remember the way for floor 0/1/2 // Done
+    //      3.1.1 Maybe keep the path for each floor individually // Made an array for each floor // Done
+    // 3.2 Maybe add stairs as a completely different type of Nodes // Done
+    //      3.2.1 Stairs might need a new field availability // Done
+    //          3.2.1.1 Availability --> one way system down one way system up or both ways // Done
+    //              3.2.1.2 Maybe just add this to all the nodes ???   <--- in the connection add the both or single // Done
+    // 3.3 Figure out how to make the algorithm choose the closest staircase // Done
+    //      3.3.1 Maybe just make the algorithm calculate the distance to each staircase // Done
+            //individually and choose the closest one to display // Done
 
     // ---------------------------------------------------------------------------------------------------------\
 

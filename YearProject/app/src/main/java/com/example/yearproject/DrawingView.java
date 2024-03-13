@@ -111,6 +111,33 @@ public class DrawingView extends View {
         invalidate();
     }
 
+
+
+
+    private void drawGoDownBitmap(Canvas canvas, int first, int second) {
+        if ((nodes[first].getroomnr() == 0) &&
+                (nodes[second].getroomnr() == 0) &&
+                (nodes[first].getFloor() > nodes[second].getFloor()) &&
+                (floorwelookat == nodes[first].getFloor())) {
+            // Draw go_down.png
+            float[] downstairsPosition = {(nodes[first].getX() - 40), (nodes[first].getY() - 40)};
+            matrix.mapPoints(downstairsPosition);
+            canvas.drawBitmap(goDownBitmap, downstairsPosition[0], downstairsPosition[1], null);
+        }
+    }
+
+    private void drawGoUpstairsBitmap(Canvas canvas, int first, int second) {
+        if ((nodes[first].getroomnr() == 0) &&
+                (nodes[second].getroomnr() == 0) &&
+                (nodes[first].getFloor() < nodes[second].getFloor()) &&
+                (floorwelookat == nodes[first].getFloor())) {
+            // Draw go_upstairs.png
+            float[] upstairsPosition = {(nodes[first].getX() - 40), (nodes[first].getY() - 40)};
+            matrix.mapPoints(upstairsPosition);
+            canvas.drawBitmap(goUpstairsBitmap, upstairsPosition[0], upstairsPosition[1], null);
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -149,39 +176,30 @@ public class DrawingView extends View {
                 int first = path.get(i);
                 int second = path.get(i + 1);
 
-                if ((nodes[first].getroomnr() == 0) && (nodes[first].getFloor() == 0) && (floorwelookat == 0)) {
-                    if ((nodes[second].getroomnr() == 0) && (nodes[second].getFloor() == 1)) {
-                        // Draw go_upstairs.png
-                        float[] upstairsPosition = {(nodes[first].getX()-40), (nodes[first].getY()-40)};
-                        matrix.mapPoints(upstairsPosition);
-                        canvas.drawBitmap(goUpstairsBitmap, upstairsPosition[0], upstairsPosition[1], null);
-                    }
-                } else if ((nodes[first].getroomnr() == 0) && (nodes[first].getFloor() == 1) && (floorwelookat == 1)) {
-                    if ((nodes[second].getroomnr() == 0) && (nodes[second].getFloor() == 0)) {
-                        // Draw go_down.png
-                        float[] downstairsPosition = {nodes[second].getX(), nodes[second].getY()};
-                        matrix.mapPoints(downstairsPosition);
-                        canvas.drawBitmap(goDownBitmap, downstairsPosition[0], downstairsPosition[1], null);
-                    }
-                }
-                else
-                {
+                // Draw go_upstairs bitmap
+                drawGoUpstairsBitmap(canvas, first, second);
+
+                // Draw go_down bitmap
+                drawGoDownBitmap(canvas, first, second);
+
+                // Draw the line only if the floor matches the current floorwelookat
+                if (nodes[first].getFloor() == floorwelookat && nodes[second].getFloor() == floorwelookat) {
                     // Transform node coordinates using the matrix
                     float[] startPoint = {nodes[first].getX(), nodes[first].getY()};
                     matrix.mapPoints(startPoint);
                     float[] endPoint = {nodes[second].getX(), nodes[second].getY()};
                     matrix.mapPoints(endPoint);
 
-                    // Draw the line only if the floor matches the current floorwelookat
-                    if (nodes[first].getFloor() == floorwelookat && nodes[second].getFloor() == floorwelookat) {
-                        canvas.drawLine(startPoint[0], startPoint[1], endPoint[0], endPoint[1], paint);
+                    canvas.drawLine(startPoint[0], startPoint[1], endPoint[0], endPoint[1], paint);
 
-                        // Draw arrowhead at the end of the last line
-                        if (i == path.size() - 2) {
-                            drawArrowHead(canvas, paint, startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
-                        }
+                    // Draw arrowhead at the end of the last line
+                    if (i == path.size() - 2) {
+                        drawArrowHead(canvas, paint, startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
                     }
+
                 }
+
+
             }
         }
     }
