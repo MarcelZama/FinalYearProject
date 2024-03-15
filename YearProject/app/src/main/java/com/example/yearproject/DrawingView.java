@@ -20,8 +20,8 @@ public class DrawingView extends View {
 
     // 1. make the green dots buttons // Later
     //      1.1 make the green buttons show an image to the screen
-    // 2. Add seconnd and third floor // IMPORTANTS 1
-    //      2.2 modify the algorithm to make it work with multiple floors
+    // 2. Add seconnd and third floor // IMPORTANTS 1 // Done
+    //      2.2 modify the algorithm to make it work with multiple floors // Done
 
     private int floorwelookat=0;
     private Bitmap image;
@@ -97,6 +97,26 @@ public class DrawingView extends View {
     public void setNodeCoordinates(Node[] nodes) {
         this.nodes = nodes;
         invalidate(); // Redraw the view
+    }
+
+    public int changeStartandFinish(String position)
+    {
+
+        // Check by RoomNr
+        for (int i = 0; i < nodes.length; i++) {
+            if (String.valueOf(nodes[i].getroomnr()).equals(position)) {
+                return i;
+            }
+        }
+
+        // Check by SecondName
+        for (int i = 0; i < nodes.length; i++) {
+            if (nodes[i].getname().equals(position)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     public void setPathForLine(List<Integer> path)

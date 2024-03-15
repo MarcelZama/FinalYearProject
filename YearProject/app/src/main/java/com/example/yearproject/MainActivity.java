@@ -52,13 +52,14 @@ public class MainActivity extends AppCompatActivity {
 
     // ---------------------------------------------------------------------------------------------------------\
 
-    // 3.4 Stop the algorithm from using the id ,use room nr and second name instead
+    // 3.4 Stop the algorithm from using the id ,use room nr and second name instead // Done
         // 3.4.1 Add autofill into the search bar
 
     // 4. Make the Final Version of Images for all 3 floors
     //      4.1 Put the dots in place
     //          4.1.1 Add the person.ico / stairs-down / stairs-up to their place
 
+    // 5. Work on Paul's Idea
 
     //Notes:
     // I changed from an array of PointF to an array of objects Node. Got the green nodes to appear only to the floor they are on . Still have to do the connections.
@@ -80,12 +81,15 @@ public class MainActivity extends AppCompatActivity {
 
     private int floor0[],floor1[],floor2[]; // <------ keep the path for each floor separated
 
+    private DrawingView drawingView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        DrawingView drawingView = findViewById(R.id.drawingView); // Assuming the ID of your DrawingView is "drawingView"
+        //DrawingView drawingView = findViewById(R.id.drawingView); // Assuming the ID of your DrawingView is "drawingView"
+        drawingView = findViewById(R.id.drawingView); // Assuming the ID of your DrawingView is "drawingView"
 
         editText = findViewById(R.id.editText);
         submitButton = findViewById(R.id.submitButton);
@@ -99,7 +103,10 @@ public class MainActivity extends AppCompatActivity {
                 if (!userInput.isEmpty()) {
                     handleInput(userInput);
                     endlocation = userInput;
+
                     addNewEditText(); // send endlocation
+
+                    endlocation = String.valueOf(drawingView.changeStartandFinish(endlocation));
                 } else {
                     Toast.makeText(MainActivity.this, "Please enter the desired destination you want to get to", Toast.LENGTH_SHORT).show();
                 }
@@ -268,6 +275,10 @@ public class MainActivity extends AppCompatActivity {
                         linearLayout.setVisibility(View.GONE);
                         isInputBoxAdded = false; // Reset flag for future addition
                         startlocation = userInput;
+
+                        //int to String than String to int ... , you'll understand(hopefully)
+                        startlocation = String.valueOf(drawingView.changeStartandFinish(startlocation));
+
                         performAStarAlgorithm();
                     } else {
                         Toast.makeText(MainActivity.this, "Please enter text", Toast.LENGTH_SHORT).show();
@@ -306,28 +317,18 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("//Joined Graphs//");
         joinedGraph.printGraph();
 
-        // Define start and goal vertices
-        //int startVertex = 1;
-        //int goalVertex = 5;
 
         // Perform A* search
         System.out.println("A* Search from " + startlocation + " to " + endlocation + ":");
 
-
-        /*                           Gotta do The magic in here                           */
-        /* ------------------------------------------------------------------------------ */
         floor0 = null; // delete everything from the arrays whenever another search beggins
         floor1 = null;
         floor2 = null;
-        //if(endlocation.floor) != current.floor
-        // then get.endlocation.building.floor
-        // then current node -> clossest floor till on the right floor
-        //if(building == a)
-        // buildinga();
-        //buildinga()
-        //{ initial xy --> each stair // get closest // display }
-        aStarSearch(joinedGraph, Integer.valueOf(startlocation), Integer.valueOf(endlocation));
 
+        if((Integer.valueOf(startlocation) != -1) && (Integer.valueOf(endlocation) != -1) )
+        {
+            aStarSearch(joinedGraph, Integer.valueOf(startlocation), Integer.valueOf(endlocation));
+        }
         // Update DrawingView with the new path
         DrawingView drawingView = findViewById(R.id.drawingView);
         drawingView.setPathForLine(newpath);
