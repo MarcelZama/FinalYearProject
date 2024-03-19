@@ -127,7 +127,9 @@ def submit_form():
     floor = int(request.form.get('floor'))  # Convert to integer
     location_x = int(request.form.get('location_x'))  # Convert to integer
     location_y = int(request.form.get('location_y'))  # Convert to integer
-    room_nr = int(request.form.get('room_nr'))  # Convert to integer
+    #room_nr = int(request.form.get('room_nr'))  # Convert to integer
+
+    room_nr = request.form.get('room_nr')  # Convert to integer
     second_name = request.form.get('second_name')  # Text remains as string
 
     # Create a new node in Firebase with the submitted data
@@ -158,7 +160,10 @@ def create_node():
     floor = int(request.form.get('floor'))
     location_x = int(request.form.get('location_x'))
     location_y = int(request.form.get('location_y'))
-    room_nr = int(request.form.get('room_nr'))
+
+    #room_nr = int(request.form.get('room_nr'))
+    room_nr = request.form.get('room_nr')
+    
     second_name = request.form.get('second_name')
 
     # Create a new node in Firebase with the updated name
@@ -178,7 +183,10 @@ def update_node(node_id):
     floor = int(request.form.get('floor'))
     location_x = int(request.form.get('location_x'))
     location_y = int(request.form.get('location_y'))
-    room_nr = int(request.form.get('room_nr'))
+    
+    #room_nr = int(request.form.get('room_nr'))
+    room_nr = request.form.get('room_nr')
+
     second_name = request.form.get('second_name')
 
     # Update the existing node with the submitted data

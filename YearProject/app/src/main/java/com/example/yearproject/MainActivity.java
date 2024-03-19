@@ -2,14 +2,9 @@ package com.example.yearproject;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -53,11 +48,13 @@ public class MainActivity extends AppCompatActivity {
     // ---------------------------------------------------------------------------------------------------------\
 
     // 3.4 Stop the algorithm from using the id ,use room nr and second name instead // Done
-        // 3.4.1 Add autofill into the search bar
+        // 3.4.1 Add autofill into the search bar (Do I really need it???)
+        // 3.4.2 Change nodeId display with roomNr // Done
 
-    // 4. Make the Final Version of Images for all 3 floors
+    // 4. Make the Final Version of Images for all 3 floors // Done
     //      4.1 Put the dots in place
     //          4.1.1 Add the person.ico / stairs-down / stairs-up to their place
+    //      4.2 Show only stairs node when need to go up the stairs
 
     // 5. Work on Paul's Idea
 

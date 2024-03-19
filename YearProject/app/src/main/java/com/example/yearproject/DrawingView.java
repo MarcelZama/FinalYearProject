@@ -63,12 +63,12 @@ public class DrawingView extends View {
             changed = 0;
 
         }
-        else if(imageResourceId == R.drawable.gftest2)
+        else if(imageResourceId == R.drawable.gftest3)
         {
             floorwelookat = 1;
             changed = 1;
         }
-        else if(imageResourceId == R.drawable.gftest3)
+        else if(imageResourceId == R.drawable.gftest2)
         {
             floorwelookat = 2;
             changed = 2;
@@ -176,11 +176,13 @@ public class DrawingView extends View {
                 matrix.mapPoints(canvasPosition);
                 if (nodes[i].getFloor() == floorwelookat) {
                     /*----> This is the green Dot Draw */
-                    canvas.drawCircle(canvasPosition[0], canvasPosition[1], 25, paint); // Draw Nodes
+                    //canvas.drawCircle(canvasPosition[0], canvasPosition[1], 25, paint); // Draw Nodes
 
                     // Draw the ID text on top of the green dot
                     paint2.setColor(getResources().getColor(android.R.color.black)); // Set text color
-                    paint2.setTextSize(40); // Set text size
+                    //paint2.setTextSize(40); // Set text size
+                    paint2.setTextSize(30); // Set text size
+                    //canvas.drawText(String.valueOf(nodes[i].getroomnr()), canvasPosition[0], canvasPosition[1], paint2);
                     canvas.drawText(String.valueOf(nodes[i].getId()), canvasPosition[0], canvasPosition[1], paint2);
                 }
                 //}
