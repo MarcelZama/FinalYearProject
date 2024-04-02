@@ -43,6 +43,22 @@ public class DrawingView extends View {
     private Bitmap goUpstairsBitmap;
 
 
+    private int startNodeId = -1;
+    private int endNodeId = -1;
+
+
+
+    public void setStartLocation(String position) {
+        startNodeId = changeStartandFinish(position);
+        invalidate();
+    }
+
+    public void setEndLocation(String position) {
+        endNodeId = changeStartandFinish(position);
+        invalidate();
+    }
+
+
 
     public DrawingView(Context context) {
         super(context);
@@ -98,12 +114,17 @@ public class DrawingView extends View {
         invalidate(); // Redraw the view
     }
 
+
+    //Get Node id
     public int changeStartandFinish(String position)
     {
+        System.out.println("I am here : " + position);
 
+        position = position.toUpperCase();
         // Check by RoomNr
         for (int i = 0; i < nodes.length; i++) {
             if (String.valueOf(nodes[i].getroomnr()).equals(position)) {
+                System.out.println("I am here 2: " + i);
                 return i;
             }
         }
@@ -111,6 +132,7 @@ public class DrawingView extends View {
         // Check by SecondName
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i].getname().equals(position)) {
+                System.out.println("I am here 2: " + i);
                 return i;
             }
         }
@@ -134,8 +156,12 @@ public class DrawingView extends View {
 
 
     private void drawGoDownBitmap(Canvas canvas, int first, int second) {
-        if ((nodes[first].getroomnr() == 0) &&
-                (nodes[second].getroomnr() == 0) &&
+//        if ((nodes[first].getroomnr() == 0) &&
+//                (nodes[second].getroomnr() == 0) &&
+//                (nodes[first].getFloor() > nodes[second].getFloor()) &&
+//                (floorwelookat == nodes[first].getFloor())) {
+        if ((nodes[first].getroomnr() == "0") &&
+                (nodes[second].getroomnr() == "0") &&
                 (nodes[first].getFloor() > nodes[second].getFloor()) &&
                 (floorwelookat == nodes[first].getFloor())) {
             // Draw go_down.png
@@ -146,8 +172,12 @@ public class DrawingView extends View {
     }
 
     private void drawGoUpstairsBitmap(Canvas canvas, int first, int second) {
-        if ((nodes[first].getroomnr() == 0) &&
-                (nodes[second].getroomnr() == 0) &&
+//        if ((nodes[first].getroomnr() == 0) &&
+//                (nodes[second].getroomnr() == 0) &&
+//                (nodes[first].getFloor() < nodes[second].getFloor()) &&
+//                (floorwelookat == nodes[first].getFloor())) {
+        if ((nodes[first].getroomnr() == "0") &&
+                (nodes[second].getroomnr() == "0") &&
                 (nodes[first].getFloor() < nodes[second].getFloor()) &&
                 (floorwelookat == nodes[first].getFloor())) {
             // Draw go_upstairs.png
@@ -174,6 +204,16 @@ public class DrawingView extends View {
                 float[] canvasPosition = {nodes[i].getX(), nodes[i].getY()};
                 matrix.mapPoints(canvasPosition);
                 if (nodes[i].getFloor() == floorwelookat) {
+
+
+                    if (i == startNodeId) {
+                        paint.setColor(getResources().getColor(android.R.color.holo_blue_dark));
+                    } else if (i == endNodeId) {
+                        paint.setColor(getResources().getColor(android.R.color.holo_red_dark));
+                    } else {
+                        paint.setColor(getResources().getColor(android.R.color.holo_green_dark));
+                    }
+
                     /*----> This is the green Dot Draw */
                     canvas.drawCircle(canvasPosition[0], canvasPosition[1], 25, paint); // Draw Nodes
 
@@ -181,8 +221,12 @@ public class DrawingView extends View {
                     paint2.setColor(getResources().getColor(android.R.color.black)); // Set text color
                     //paint2.setTextSize(40); // Set text size
                     paint2.setTextSize(30); // Set text size
-                    //canvas.drawText(String.valueOf(nodes[i].getroomnr()), canvasPosition[0], canvasPosition[1], paint2);
-                    canvas.drawText(String.valueOf(nodes[i].getId()), canvasPosition[0], canvasPosition[1], paint2);
+
+                    if (!nodes[i].getroomnr().equals("-1") && !nodes[i].getroomnr().equals("0")) {
+                        canvas.drawText(String.valueOf(nodes[i].getroomnr()), canvasPosition[0], canvasPosition[1], paint2);
+                    }
+
+                    //canvas.drawText(String.valueOf(nodes[i].getId()), canvasPosition[0], canvasPosition[1], paint2);
                 }
                 //}
             }
@@ -191,7 +235,7 @@ public class DrawingView extends View {
         // Draw the line between shortest path nodes
         if (path != null && path.size() >= 2) {
             paint.setColor(getResources().getColor(android.R.color.holo_blue_dark)); // Set line color
-            paint.setStrokeWidth(5); // Set line width
+            paint.setStrokeWidth(10); // Set line width
 
             for (int i = 0; i < path.size() - 1; i++) {
                 int first = path.get(i);

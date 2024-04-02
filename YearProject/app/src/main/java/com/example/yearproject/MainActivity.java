@@ -59,10 +59,10 @@ public class MainActivity extends AppCompatActivity {
     // Lower the input if string is all leters // Done
 
     // Finall steps :
-    // 1. Fix the search
+    // 1. Fix the search // Kindof Done
     // 2. Add start location when press on a node
-    // 3. Show node roomnr if > 0
-    // 4. if node pressed than change its collor to blue
+    // 3. Show node roomnr if > 0 // Done
+    // 4. if node pressed than change its collor to blue // Done
 
     // 5. Work on Paul's Idea
     // 6. Store the website on python anywhere
@@ -111,17 +111,17 @@ public class MainActivity extends AppCompatActivity {
                     addNewEditText(); // send endlocation
 
                     // IF Room Number F101 will read 101
-                    if ((Character.isLetter(endlocation.charAt(0))) && (Character.isDigit(endlocation.charAt(1)))){
-                        // Remove the first character if it's a letter
-                        endlocation = endlocation.substring(1);
-                    }
+//                    if ((Character.isLetter(endlocation.charAt(0))) && (Character.isDigit(endlocation.charAt(1)))){
+//                        // Remove the first character if it's a letter
+//                        endlocation = endlocation.substring(1);
+//                    }
                     // Lower case the inputs for easier navigation and error bypass
                     if ((Character.isLetter(endlocation.charAt(0))) && (Character.isLetter(endlocation.charAt(1)))){
                         // Remove the first character if it's a letter
                         endlocation = endlocation.toLowerCase();
                     }
 
-
+                    drawingView.setEndLocation(endlocation);
                     endlocation = String.valueOf(drawingView.changeStartandFinish(endlocation));
                 } else {
                     Toast.makeText(MainActivity.this, "Please enter the desired destination you want to get to", Toast.LENGTH_SHORT).show();
@@ -211,15 +211,16 @@ public class MainActivity extends AppCompatActivity {
                     String roomNrString = snapshot.child("RoomNr").getValue(String.class);
                     int roomNr = 0;
 
-                    if (Character.isLetter(roomNrString.charAt(0))) {
-                        // Remove the first character if it's a letter
-                        roomNrString = roomNrString.substring(1);
-                        roomNr = Integer.parseInt(roomNrString);
-                    }
+//                    if (Character.isLetter(roomNrString.charAt(0))) {
+//                        // Remove the first character if it's a letter
+//                        roomNrString = roomNrString.substring(1);
+//                        roomNr = Integer.parseInt(roomNrString);
+//                    }
 
                     String secondName = snapshot.child("SecondName").getValue(String.class);
 
-                    Node node = new Node(Integer.parseInt(nodeid),floor,locationX, locationY,roomNr,secondName);
+                    //Node node = new Node(Integer.parseInt(nodeid),floor,locationX, locationY,roomNr,secondName);
+                    Node node = new Node(Integer.parseInt(nodeid),floor,locationX, locationY,roomNrString,secondName);
                     nodeCoordinates[index] = node;
                     index++;
 
@@ -300,21 +301,23 @@ public class MainActivity extends AppCompatActivity {
                         isInputBoxAdded = false; // Reset flag for future addition
                         startlocation = userInput;
 
-                        // IF Room Number F101 will read 101
-                        if ((Character.isLetter(startlocation.charAt(0))) && (Character.isDigit(startlocation.charAt(1)))){
-                            // Remove the first character if it's a letter
-                            startlocation = startlocation.substring(1);
-                        }
-
-                        // Lower case the inputs for easier navigation and error bypass
-                        if ((Character.isLetter(startlocation.charAt(0))) && (Character.isLetter(startlocation.charAt(1)))){
-                            // Remove the first character if it's a letter
-                            startlocation = startlocation.toLowerCase();
-                        }
+//                        // IF Room Number F101 will read 101
+//                        if ((Character.isLetter(startlocation.charAt(0))) && (Character.isDigit(startlocation.charAt(1)))){
+//                            // Remove the first character if it's a letter
+//                            startlocation = startlocation.substring(1);
+//                        }
+//
+//                        // Lower case the inputs for easier navigation and error bypass
+//                        if ((Character.isLetter(startlocation.charAt(0))) && (Character.isLetter(startlocation.charAt(1)))){
+//                            // Remove the first character if it's a letter
+//                            startlocation = startlocation.toLowerCase();
+//                        }
 
                         //int to String than String to int ... , you'll understand(hopefully)
-                        startlocation = String.valueOf(drawingView.changeStartandFinish(startlocation));
 
+                        drawingView.setStartLocation(startlocation);
+                        startlocation = String.valueOf(drawingView.changeStartandFinish(startlocation));
+                        System.out.println("After I come back I am : " + startlocation );
 
                         performAStarAlgorithm();
                     } else {
@@ -362,16 +365,26 @@ public class MainActivity extends AppCompatActivity {
         floor1 = null;
         floor2 = null;
 
-        if((Integer.valueOf(startlocation) != -1) && (Integer.valueOf(endlocation) != -1) )
-        {
+//        if((Integer.valueOf(startlocation) != -1) && (Integer.valueOf(endlocation) != -1) )
+//        {
+//            aStarSearch(joinedGraph, Integer.valueOf(startlocation), Integer.valueOf(endlocation));
+//
+//            // Update DrawingView with the new path
+//            DrawingView drawingView = findViewById(R.id.drawingView);
+//            drawingView.setPathForLine(newpath);
+//        }
+//        else
+//        {
+//            System.out.println("Invalid Input");
+//        }
+
+        if (!startlocation.isEmpty() && !endlocation.isEmpty()) {
             aStarSearch(joinedGraph, Integer.valueOf(startlocation), Integer.valueOf(endlocation));
 
             // Update DrawingView with the new path
             DrawingView drawingView = findViewById(R.id.drawingView);
             drawingView.setPathForLine(newpath);
-        }
-        else
-        {
+        } else {
             System.out.println("Invalid Input");
         }
     }

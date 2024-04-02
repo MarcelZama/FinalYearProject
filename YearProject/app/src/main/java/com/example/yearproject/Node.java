@@ -5,10 +5,10 @@ public class Node {
     private int floor;
     private int x;
     private int y;
-    private int roomNr;
+    private String roomNr;
     private String name;
 
-    public Node(int id,int floor, int x, int y, int roomNr, String name) {
+    public Node(int id,int floor, int x, int y, String roomNr, String name) {
 
         this.id = id;
         this.floor = floor;
@@ -33,7 +33,7 @@ public class Node {
         return y;
     }
 
-    public int getroomnr() {
+    public String getroomnr() {
         return roomNr;
     }
 
