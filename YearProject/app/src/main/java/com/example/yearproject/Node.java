@@ -12,8 +12,10 @@ public class Node {
 
         this.id = id;
         this.floor = floor;
-        this.x = x;
-        this.y = y;
+        this.x = (int) Math.round(x* 2.75);
+        //this.x = x;
+        this.y = (int) Math.round(y* 2.75);
+        //this.y = y;
         this.roomNr = roomNr;
         this.name = name;
     }

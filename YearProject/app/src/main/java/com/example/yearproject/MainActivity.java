@@ -45,25 +45,32 @@ public class MainActivity extends AppCompatActivity {
     //      3.3.1 Maybe just make the algorithm calculate the distance to each staircase // Done
             //individually and choose the closest one to display // Done
 
-    // ---------------------------------------------------------------------------------------------------------\
-
     // 3.4 Stop the algorithm from using the id ,use room nr and second name instead // Done
         // 3.4.1 Add autofill into the search bar (Do I really need it???)
         // 3.4.2 Change nodeId display with roomNr // Done
 
+    // ---------------------------------------------------------------------------------------------------------\
+
     // 4. Make the Final Version of Images for all 3 floors // Done
-    //      4.1 Put the dots in place
+    //      4.1 Put the dots in place // Done
     //          4.1.1 Add the person.ico / stairs-down / stairs-up to their place
     //      4.2 Show only stairs node when need to go up the stairs
 
+    // Lower the input if string is all leters // Done
+
+    // Finall steps :
+    // 1. Fix the search
+    // 2. Add start location when press on a node
+    // 3. Show node roomnr if > 0
+    // 4. if node pressed than change its collor to blue
+
     // 5. Work on Paul's Idea
+    // 6. Store the website on python anywhere
 
     //Notes:
-    // I changed from an array of PointF to an array of objects Node. Got the green nodes to appear only to the floor they are on . Still have to do the connections.
-
-    //At the moment the algorithm is working only once gotta make it work 3 times , if the location is on another floor ,
-    // go to that floor by fining the path to the stairs than go down and show the other path
-    // Short: Have 3 algorithms for all 3 floors
+    // I think Ive done a big mistake , some rooms like the gym and sports hall do not have a room nr , but the algorithm works based on room nr
+    // may have to convert it back to the node id ,and convert everything to node id :(
+    // definetly cause some rooms have the same number ,just different letter before L104 N104
     Graph connectionsGraph = null;
     Graph nodesGraph = null;
 
@@ -102,6 +109,18 @@ public class MainActivity extends AppCompatActivity {
                     endlocation = userInput;
 
                     addNewEditText(); // send endlocation
+
+                    // IF Room Number F101 will read 101
+                    if ((Character.isLetter(endlocation.charAt(0))) && (Character.isDigit(endlocation.charAt(1)))){
+                        // Remove the first character if it's a letter
+                        endlocation = endlocation.substring(1);
+                    }
+                    // Lower case the inputs for easier navigation and error bypass
+                    if ((Character.isLetter(endlocation.charAt(0))) && (Character.isLetter(endlocation.charAt(1)))){
+                        // Remove the first character if it's a letter
+                        endlocation = endlocation.toLowerCase();
+                    }
+
 
                     endlocation = String.valueOf(drawingView.changeStartandFinish(endlocation));
                 } else {
@@ -189,7 +208,15 @@ public class MainActivity extends AppCompatActivity {
                     int floor = snapshot.child("Floor").getValue(Integer.class);
                     int locationX = snapshot.child("LocationX").getValue(Integer.class);
                     int locationY = snapshot.child("LocationY").getValue(Integer.class);
-                    int roomNr = snapshot.child("RoomNr").getValue(Integer.class);
+                    String roomNrString = snapshot.child("RoomNr").getValue(String.class);
+                    int roomNr = 0;
+
+                    if (Character.isLetter(roomNrString.charAt(0))) {
+                        // Remove the first character if it's a letter
+                        roomNrString = roomNrString.substring(1);
+                        roomNr = Integer.parseInt(roomNrString);
+                    }
+
                     String secondName = snapshot.child("SecondName").getValue(String.class);
 
                     Node node = new Node(Integer.parseInt(nodeid),floor,locationX, locationY,roomNr,secondName);
@@ -205,10 +232,10 @@ public class MainActivity extends AppCompatActivity {
                 // Pass node coordinates to DrawingView
                 drawingView.setNodeCoordinates(nodeCoordinates);
 
-                for(int x = 0 ; x < totalSize; x++)
-                {
-                    System.out.println("This is the print --> " + nodeCoordinates[x]);
-                }
+//                for(int x = 0 ; x < totalSize; x++)
+//                {
+//                    System.out.println("This is the print --> " + nodeCoordinates[x]);
+//                }
             }
 
             @Override
@@ -273,8 +300,21 @@ public class MainActivity extends AppCompatActivity {
                         isInputBoxAdded = false; // Reset flag for future addition
                         startlocation = userInput;
 
+                        // IF Room Number F101 will read 101
+                        if ((Character.isLetter(startlocation.charAt(0))) && (Character.isDigit(startlocation.charAt(1)))){
+                            // Remove the first character if it's a letter
+                            startlocation = startlocation.substring(1);
+                        }
+
+                        // Lower case the inputs for easier navigation and error bypass
+                        if ((Character.isLetter(startlocation.charAt(0))) && (Character.isLetter(startlocation.charAt(1)))){
+                            // Remove the first character if it's a letter
+                            startlocation = startlocation.toLowerCase();
+                        }
+
                         //int to String than String to int ... , you'll understand(hopefully)
                         startlocation = String.valueOf(drawingView.changeStartandFinish(startlocation));
+
 
                         performAStarAlgorithm();
                     } else {
@@ -318,17 +358,22 @@ public class MainActivity extends AppCompatActivity {
         // Perform A* search
         System.out.println("A* Search from " + startlocation + " to " + endlocation + ":");
 
-        floor0 = null; // delete everything from the arrays whenever another search beggins
+        floor0 = null; // delete everything from the arrays whenever another search begins
         floor1 = null;
         floor2 = null;
 
         if((Integer.valueOf(startlocation) != -1) && (Integer.valueOf(endlocation) != -1) )
         {
             aStarSearch(joinedGraph, Integer.valueOf(startlocation), Integer.valueOf(endlocation));
+
+            // Update DrawingView with the new path
+            DrawingView drawingView = findViewById(R.id.drawingView);
+            drawingView.setPathForLine(newpath);
         }
-        // Update DrawingView with the new path
-        DrawingView drawingView = findViewById(R.id.drawingView);
-        drawingView.setPathForLine(newpath);
+        else
+        {
+            System.out.println("Invalid Input");
+        }
     }
 
     private static Graph reverseGraph(Graph connectionsGraph) {

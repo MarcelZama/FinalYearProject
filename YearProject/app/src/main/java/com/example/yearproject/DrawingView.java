@@ -61,14 +61,13 @@ public class DrawingView extends View {
         {
             floorwelookat = 0;
             changed = 0;
-
         }
-        else if(imageResourceId == R.drawable.gftest3)
+        else if(imageResourceId == R.drawable.gftest2)
         {
             floorwelookat = 1;
             changed = 1;
         }
-        else if(imageResourceId == R.drawable.gftest2)
+        else if(imageResourceId == R.drawable.gftest3)
         {
             floorwelookat = 2;
             changed = 2;
@@ -140,7 +139,7 @@ public class DrawingView extends View {
                 (nodes[first].getFloor() > nodes[second].getFloor()) &&
                 (floorwelookat == nodes[first].getFloor())) {
             // Draw go_down.png
-            float[] downstairsPosition = {(nodes[first].getX() - 40), (nodes[first].getY() - 40)};
+            float[] downstairsPosition = {(nodes[first].getX() - 10), (nodes[first].getY()- 10)};
             matrix.mapPoints(downstairsPosition);
             canvas.drawBitmap(goDownBitmap, downstairsPosition[0], downstairsPosition[1], null);
         }
@@ -152,7 +151,7 @@ public class DrawingView extends View {
                 (nodes[first].getFloor() < nodes[second].getFloor()) &&
                 (floorwelookat == nodes[first].getFloor())) {
             // Draw go_upstairs.png
-            float[] upstairsPosition = {(nodes[first].getX() - 40), (nodes[first].getY() - 40)};
+            float[] upstairsPosition = {(nodes[first].getX()- 10), (nodes[first].getY()- 10)};
             matrix.mapPoints(upstairsPosition);
             canvas.drawBitmap(goUpstairsBitmap, upstairsPosition[0], upstairsPosition[1], null);
         }
@@ -176,7 +175,7 @@ public class DrawingView extends View {
                 matrix.mapPoints(canvasPosition);
                 if (nodes[i].getFloor() == floorwelookat) {
                     /*----> This is the green Dot Draw */
-                    //canvas.drawCircle(canvasPosition[0], canvasPosition[1], 25, paint); // Draw Nodes
+                    canvas.drawCircle(canvasPosition[0], canvasPosition[1], 25, paint); // Draw Nodes
 
                     // Draw the ID text on top of the green dot
                     paint2.setColor(getResources().getColor(android.R.color.black)); // Set text color
