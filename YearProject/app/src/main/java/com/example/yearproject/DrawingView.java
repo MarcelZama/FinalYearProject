@@ -1,16 +1,34 @@
 package com.example.yearproject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import java.util.List;
 
@@ -45,6 +63,11 @@ public class DrawingView extends View {
 
     private int startNodeId = -1;
     private int endNodeId = -1;
+
+
+    private static final int MENU_SET_START = 1;
+    private static final int MENU_SET_END = 2;
+
 
 
 
@@ -290,6 +313,7 @@ public class DrawingView extends View {
             case MotionEvent.ACTION_DOWN:
                 lastTouchX = event.getX();
                 lastTouchY = event.getY();
+                checkButtonPress(lastTouchX, lastTouchY);
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (event.getPointerCount() == 1) {
@@ -317,9 +341,104 @@ public class DrawingView extends View {
 //                break;
         }
 
+//        for (int i = 0; i < nodes.length; i++) {
+//            float distance = (float) Math.abs(Math.sqrt(Math.pow((lastTouchX) - nodes[i].getX(), 2) + Math.pow((lastTouchY) - nodes[i].getY(), 2)));
+//
+//            if ((distance <= 50) && (nodes[i].getFloor() == floorwelookat)) {
+//                // Show the pop-up menu
+//                showNodePopupMenu(i, lastTouchX, lastTouchY);
+//                break;
+//            }
+//        }
+
         invalidate(); // Redraw the view
         return true;
     }
+
+    private void checkButtonPress(float touchX, float touchY) {
+        if (nodes == null) {
+            return; // Exit the method if nodes are not initialized
+        }
+
+        showPopUpMessage(touchX + " / " + touchY);
+
+        Matrix inverse = new Matrix();
+        matrix.invert(inverse);
+
+        float[] touchPoint = {touchX, touchY};
+        inverse.mapPoints(touchPoint);
+
+        for (int i = 0; i < nodes.length; i++) {
+            float distance = (float) Math.abs(Math.sqrt(Math.pow((touchPoint[0]) - nodes[i].getX(), 2) + Math.pow((touchPoint[1]) - nodes[i].getY(), 2)));
+
+            if ((distance <= 25) && (nodes[i].getFloor() == floorwelookat)) {
+                // Green dot/button pressed, handle accordingly
+                // For now, let's just show a message
+                showPopUpMessage(nodes[i].getroomnr());
+
+                // Show the pop-up menu
+                showNodePopupMenu(i, touchX, touchY);
+                break;
+            }
+        }
+    }
+
+    private void showPopUpMessage(String message) {
+        // You can replace this with your desired pop-up message implementation
+        // For example, displaying a Toast message
+        Toast.makeText(getContext(), "Green dot/button pressed at: " + message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showNodePopupMenu(final int nodeId, final float touchX, final float touchY) {
+        // Create a new PopupWindow
+        PopupWindow popupWindow = new PopupWindow(getContext());
+
+        // Set the custom layout for the PopupWindow
+        View popupView = LayoutInflater.from(getContext()).inflate(R.layout.node_popup_menu, null);
+        popupWindow.setContentView(popupView);
+
+        // Find views inside the custom layout
+        TextView menuSetStart = popupView.findViewById(R.id.menu_set_start);
+        TextView menuSetEnd = popupView.findViewById(R.id.menu_set_end);
+
+        // Set click listeners for menu items
+        menuSetStart.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setStartLocation(String.valueOf(nodeId));
+                popupWindow.dismiss();
+            }
+        });
+
+        menuSetEnd.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setEndLocation(String.valueOf(nodeId));
+                popupWindow.dismiss();
+            }
+        });
+
+        // Set the width and height of the PopupWindow
+        popupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+
+        // Set focusable and background drawable (using the custom background)
+        popupWindow.setFocusable(true);
+        popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.custom_popup_background));
+
+        // Calculate the center position for the PopupWindow
+        int offsetX = (int) touchX;
+        int offsetY = (int) touchY;
+
+        // Show the PopupWindow at the calculated position
+        popupWindow.showAtLocation(this, Gravity.NO_GRAVITY, offsetX, offsetY);
+    }
+
+
+
+
+
+
 
     private float calculateDistance(MotionEvent event) {
         float dx = event.getX(0) - event.getX(1);

@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     //          2.2.1.1 Fully Convert the Program to array of Nodes instead of PointF[] // Done
     // 2.3 Put the Id on top of the nodes to make it easier to put them in place // Done
     // 2.4 Add Reverse Field for Connections // Done
-        // 2.4.1 Read the field in the code and if not 1 then do not reverse. // Done
+    // 2.4.1 Read the field in the code and if not 1 then do not reverse. // Done
 
     // 3. Modify the code to send you to the stairs if you have to go down or up the stairs. // Done
     // 3.1 Have to remember the way for floor 0/1/2 // Done
@@ -43,11 +43,11 @@ public class MainActivity extends AppCompatActivity {
     //              3.2.1.2 Maybe just add this to all the nodes ???   <--- in the connection add the both or single // Done
     // 3.3 Figure out how to make the algorithm choose the closest staircase // Done
     //      3.3.1 Maybe just make the algorithm calculate the distance to each staircase // Done
-            //individually and choose the closest one to display // Done
+    //individually and choose the closest one to display // Done
 
     // 3.4 Stop the algorithm from using the id ,use room nr and second name instead // Done
-        // 3.4.1 Add autofill into the search bar (Do I really need it???)
-        // 3.4.2 Change nodeId display with roomNr // Done
+    // 3.4.1 Add autofill into the search bar (Do I really need it???)
+    // 3.4.2 Change nodeId display with roomNr // Done
 
     // ---------------------------------------------------------------------------------------------------------\
 
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     //Notes:
     // I think Ive done a big mistake , some rooms like the gym and sports hall do not have a room nr , but the algorithm works based on room nr
     // may have to convert it back to the node id ,and convert everything to node id :(
-    // definetly cause some rooms have the same number ,just different letter before L104 N104
+    // definetly cause some rooms have the same number ,just different letter before L104 N104 // Done
     Graph connectionsGraph = null;
     Graph nodesGraph = null;
 

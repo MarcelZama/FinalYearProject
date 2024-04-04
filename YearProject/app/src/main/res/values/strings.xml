@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">IM Setu Carlow</string>
+
+    <string name="select_node_action">Select Node Action</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="set_end_node_button">Set as End Node</string>
+    <string name="set_start_node_button">Set as Start Node</string>
+
 </resources>
