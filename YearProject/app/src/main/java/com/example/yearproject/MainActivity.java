@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
 import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,19 +54,21 @@ public class MainActivity extends AppCompatActivity {
 
     // 4. Make the Final Version of Images for all 3 floors // Done
     //      4.1 Put the dots in place // Done
-    //          4.1.1 Add the person.ico / stairs-down / stairs-up to their place
-    //      4.2 Show only stairs node when need to go up the stairs
+    //          4.1.1 Add the person.ico / stairs-down / stairs-up to their place //Done
+    //      4.2 Show only stairs node when need to go up the stairs //Done
 
     // Lower the input if string is all leters // Done
 
     // Finall steps :
     // 1. Fix the search // Kindof Done
-    // 2. Add start location when press on a node
+    // 2. Add start location when press on a node //Done
     // 3. Show node roomnr if > 0 // Done
     // 4. if node pressed than change its collor to blue // Done
 
-    // 5. Work on Paul's Idea
-    // 6. Store the website on python anywhere
+    // 5. Work on Paul's Idea // Worth it??
+    // 6. Store the website on python anywhere //Done
+
+    // 7. Finish the Distance and Time display when Algorithm finish work to display the box 
 
     //Notes:
     // I think Ive done a big mistake , some rooms like the gym and sports hall do not have a room nr , but the algorithm works based on room nr
@@ -87,6 +90,19 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawingView drawingView;
 
+
+    protected void newstartlocation(String position) {
+        startlocation = position;
+        System.out.println("newstartlocation --> " + position);
+    }
+
+    protected void newendlocation(String position) {
+        endlocation = position;
+        System.out.println("newendlocation" + position);
+
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
         //DrawingView drawingView = findViewById(R.id.drawingView); // Assuming the ID of your DrawingView is "drawingView"
         drawingView = findViewById(R.id.drawingView); // Assuming the ID of your DrawingView is "drawingView"
+        drawingView.setMainActivity(this); // Pass the MainActivity reference
+
 
         editText = findViewById(R.id.editText);
         submitButton = findViewById(R.id.submitButton);
@@ -280,6 +298,11 @@ public class MainActivity extends AppCompatActivity {
             newEditText.setTextColor(getResources().getColor(android.R.color.black));
             newEditText.setPadding(12, 8, 12, 8); // Adjust padding as needed
 
+            // Populate EditText if startlocation is valid
+            if (startlocation != null && !startlocation.isEmpty() && Integer.valueOf(startlocation) > -1) {
+                newEditText.setText(startlocation);
+            }
+
             // Create Submit Button for EditText
             Button newSubmitButton = new Button(this);
             LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
@@ -301,20 +324,7 @@ public class MainActivity extends AppCompatActivity {
                         isInputBoxAdded = false; // Reset flag for future addition
                         startlocation = userInput;
 
-//                        // IF Room Number F101 will read 101
-//                        if ((Character.isLetter(startlocation.charAt(0))) && (Character.isDigit(startlocation.charAt(1)))){
-//                            // Remove the first character if it's a letter
-//                            startlocation = startlocation.substring(1);
-//                        }
-//
-//                        // Lower case the inputs for easier navigation and error bypass
-//                        if ((Character.isLetter(startlocation.charAt(0))) && (Character.isLetter(startlocation.charAt(1)))){
-//                            // Remove the first character if it's a letter
-//                            startlocation = startlocation.toLowerCase();
-//                        }
-
-                        //int to String than String to int ... , you'll understand(hopefully)
-
+                        // Set start location in DrawingView
                         drawingView.setStartLocation(startlocation);
                         startlocation = String.valueOf(drawingView.changeStartandFinish(startlocation));
                         System.out.println("After I come back I am : " + startlocation );
@@ -337,25 +347,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     /* -------------------------------------------------------------------------- */
     /*                           A* Algorithm Beginning                           */
     /*                           Creation of the Graphs                           */
     /* -------------------------------------------------------------------------- */
-    private void performAStarAlgorithm() {
+    protected void performAStarAlgorithm() {
 
         // Print the original graph
         System.out.println("//Normal Graph//");
-        connectionsGraph.printGraph();
+        //connectionsGraph.printGraph();
 
         // Reverse the graph
         Graph reversedGraph = reverseGraph(connectionsGraph);
         System.out.println("//Reversed Graph//");
-        reversedGraph.printGraph();
+        //reversedGraph.printGraph();
 
         // Join the original and reversed graphs
         Graph joinedGraph = joinGraphs(connectionsGraph, reversedGraph);
         System.out.println("//Joined Graphs//");
-        joinedGraph.printGraph();
+        //joinedGraph.printGraph();
 
 
         // Perform A* search
@@ -389,7 +400,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static Graph reverseGraph(Graph connectionsGraph) {
+    @NonNull
+    private static Graph reverseGraph(@NonNull Graph connectionsGraph) {
         int totalVertices = connectionsGraph.vertices + 2;
         Graph reversedGraph = new Graph(totalVertices);
 
@@ -406,7 +418,8 @@ public class MainActivity extends AppCompatActivity {
         return reversedGraph;
     }
 
-    private static Graph joinGraphs(Graph graph1, Graph graph2) {
+    @NonNull
+    private static Graph joinGraphs(@NonNull Graph graph1, Graph graph2) {
         // Create a new graph with combined vertices
         int totalVertices = graph1.vertices + 2;
         Graph joinedGraph = new Graph(totalVertices);

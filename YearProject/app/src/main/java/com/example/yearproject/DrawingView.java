@@ -68,8 +68,16 @@ public class DrawingView extends View {
     private static final int MENU_SET_START = 1;
     private static final int MENU_SET_END = 2;
 
+    private int distance = 0;
 
 
+    private MainActivity mainActivity;
+
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
+
+    //Relate the menu to the final and start variables
 
     public void setStartLocation(String position) {
         startNodeId = changeStartandFinish(position);
@@ -160,6 +168,14 @@ public class DrawingView extends View {
             }
         }
 
+        // Check by id
+        for (int i = 1; i < nodes.length; i++) {
+            if (nodes[i].getId() == Integer.parseInt(position)) {
+                System.out.println("I am here 3: " + i);
+                return i;
+            }
+        }
+
         return -1;
     }
 
@@ -183,8 +199,8 @@ public class DrawingView extends View {
 //                (nodes[second].getroomnr() == 0) &&
 //                (nodes[first].getFloor() > nodes[second].getFloor()) &&
 //                (floorwelookat == nodes[first].getFloor())) {
-        if ((nodes[first].getroomnr() == "0") &&
-                (nodes[second].getroomnr() == "0") &&
+        if (nodes[first].getroomnr().equals("-1") &&
+                nodes[second].getroomnr().equals("-1") &&
                 (nodes[first].getFloor() > nodes[second].getFloor()) &&
                 (floorwelookat == nodes[first].getFloor())) {
             // Draw go_down.png
@@ -199,8 +215,8 @@ public class DrawingView extends View {
 //                (nodes[second].getroomnr() == 0) &&
 //                (nodes[first].getFloor() < nodes[second].getFloor()) &&
 //                (floorwelookat == nodes[first].getFloor())) {
-        if ((nodes[first].getroomnr() == "0") &&
-                (nodes[second].getroomnr() == "0") &&
+        if (nodes[first].getroomnr().equals("-1") &&
+                nodes[second].getroomnr().equals("-1") &&
                 (nodes[first].getFloor() < nodes[second].getFloor()) &&
                 (floorwelookat == nodes[first].getFloor())) {
             // Draw go_upstairs.png
@@ -360,7 +376,7 @@ public class DrawingView extends View {
             return; // Exit the method if nodes are not initialized
         }
 
-        showPopUpMessage(touchX + " / " + touchY);
+        //showPopUpMessage(touchX + " / " + touchY);
 
         Matrix inverse = new Matrix();
         matrix.invert(inverse);
@@ -406,6 +422,16 @@ public class DrawingView extends View {
             @Override
             public void onClick(View v) {
                 setStartLocation(String.valueOf(nodeId));
+
+                if (mainActivity != null)
+                {
+                    //mainActivity.newstartlocation(nodes[startNodeId].getroomnr());
+                    mainActivity.newstartlocation(Integer.toString(startNodeId));
+                    if ((mainActivity != null) && (endNodeId > 0)){
+                        mainActivity.performAStarAlgorithm();
+                    }
+                }
+
                 popupWindow.dismiss();
             }
         });
@@ -414,6 +440,16 @@ public class DrawingView extends View {
             @Override
             public void onClick(View v) {
                 setEndLocation(String.valueOf(nodeId));
+
+                if (mainActivity != null) {
+                    //mainActivity.newendlocation(nodes[endNodeId].getroomnr());
+                    mainActivity.newendlocation(Integer.toString(endNodeId));
+                    if (mainActivity != null) {
+                        mainActivity.performAStarAlgorithm();
+                    } else {
+                        Log.e("DrawingView", "MainActivity is null");
+                    }
+                }
                 popupWindow.dismiss();
             }
         });
@@ -519,5 +555,10 @@ public class DrawingView extends View {
         invalidate();
     }
 
+
+//    public interface MainActivityListener {
+//        void newstartlocation(String position);
+//        void newendlocation(String position);
+//    }
 
 }
