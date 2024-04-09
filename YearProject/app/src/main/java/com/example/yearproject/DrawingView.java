@@ -1,6 +1,5 @@
 package com.example.yearproject;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,27 +7,24 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PointF;
-import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.PopupMenu;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -43,8 +39,8 @@ public class DrawingView extends View {
 
     private int floorwelookat=0;
     private Bitmap image;
-    private Matrix matrix = new Matrix();
-    private float[] matrixValues = new float[9];
+    private final Matrix matrix = new Matrix();
+    private final float[] matrixValues = new float[9];
     private static final float MIN_ZOOM_SCALE = 0.7f;
     private static final float MAX_ZOOM_SCALE = 3f;
     private float imageWidth, imageHeight;
@@ -54,8 +50,8 @@ public class DrawingView extends View {
     List<Integer> path;
     private Node[] nodes;
     private int changed=0;
-    private Paint paint = new Paint();
-    private Paint paint2 = new Paint();
+    private final Paint paint = new Paint();
+    private final Paint paint2 = new Paint();
 
     private Bitmap goDownBitmap;
     private Bitmap goUpstairsBitmap;
@@ -65,17 +61,42 @@ public class DrawingView extends View {
     private int endNodeId = -1;
 
 
-    private static final int MENU_SET_START = 1;
-    private static final int MENU_SET_END = 2;
+    private static double distance = 0;
 
-    private int distance = 0;
-
+    private LinearLayout distanceTimeBox;
+    private TextView distanceTextView;
+    private TextView timeTextView;
 
     private MainActivity mainActivity;
+
+    private PopupWindow popupWindow;
 
     public void setMainActivity(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
+
+    public void setDistanceTimeTextViews(final TextView distanceTextView, final TextView timeTextView) {
+        this.distanceTextView = distanceTextView;
+        this.timeTextView = timeTextView;
+
+        // Initialize distanceTimeBox
+        distanceTimeBox = new LinearLayout(getContext());
+
+        // Set orientation and other properties as needed
+        distanceTimeBox.setOrientation(LinearLayout.VERTICAL);
+
+        // Add touch listener to the distanceTimeBox
+        if (distanceTimeBox != null) {
+            distanceTimeBox.setOnTouchListener(new OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // Consume the touch events to prevent them from reaching the underlying DrawingView
+                    return true;
+                }
+            });
+        }
+    }
+
 
     //Relate the menu to the final and start variables
 
@@ -89,6 +110,20 @@ public class DrawingView extends View {
         invalidate();
     }
 
+    public void setDistanceandCalculateTime(int costInSeconds) {
+        // Convert seconds to minutes and seconds
+        int minutes = costInSeconds / 60;
+        int seconds = costInSeconds % 60;
+
+        // Display the time in the format "mm:ss"
+        String timeText = String.format("%02d:%02d", minutes, seconds);
+
+        distance = costInSeconds; // Assuming costInSeconds is in seconds
+
+        if (distanceTextView != null && timeTextView != null) {
+            showDistanceTimeBox(String.valueOf(distance), timeText);
+        }
+    }
 
 
     public DrawingView(Context context) {
@@ -195,10 +230,6 @@ public class DrawingView extends View {
 
 
     private void drawGoDownBitmap(Canvas canvas, int first, int second) {
-//        if ((nodes[first].getroomnr() == 0) &&
-//                (nodes[second].getroomnr() == 0) &&
-//                (nodes[first].getFloor() > nodes[second].getFloor()) &&
-//                (floorwelookat == nodes[first].getFloor())) {
         if (nodes[first].getroomnr().equals("-1") &&
                 nodes[second].getroomnr().equals("-1") &&
                 (nodes[first].getFloor() > nodes[second].getFloor()) &&
@@ -211,10 +242,6 @@ public class DrawingView extends View {
     }
 
     private void drawGoUpstairsBitmap(Canvas canvas, int first, int second) {
-//        if ((nodes[first].getroomnr() == 0) &&
-//                (nodes[second].getroomnr() == 0) &&
-//                (nodes[first].getFloor() < nodes[second].getFloor()) &&
-//                (floorwelookat == nodes[first].getFloor())) {
         if (nodes[first].getroomnr().equals("-1") &&
                 nodes[second].getroomnr().equals("-1") &&
                 (nodes[first].getFloor() < nodes[second].getFloor()) &&
@@ -227,7 +254,7 @@ public class DrawingView extends View {
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected void onDraw(@NotNull Canvas canvas) {
         super.onDraw(canvas);
 
         // Draw the image
@@ -261,11 +288,11 @@ public class DrawingView extends View {
                     //paint2.setTextSize(40); // Set text size
                     paint2.setTextSize(30); // Set text size
 
-                    if (!nodes[i].getroomnr().equals("-1") && !nodes[i].getroomnr().equals("0")) {
-                        canvas.drawText(String.valueOf(nodes[i].getroomnr()), canvasPosition[0], canvasPosition[1], paint2);
-                    }
+//                    if (!nodes[i].getroomnr().equals("-1") && !nodes[i].getroomnr().equals("0")) {
+//                        canvas.drawText(String.valueOf(nodes[i].getroomnr()), canvasPosition[0], canvasPosition[1], paint2);
+//                    }
 
-                    //canvas.drawText(String.valueOf(nodes[i].getId()), canvasPosition[0], canvasPosition[1], paint2);
+                    canvas.drawText(String.valueOf(nodes[i].getId()), canvasPosition[0], canvasPosition[1], paint2);
                 }
                 //}
             }
@@ -300,15 +327,70 @@ public class DrawingView extends View {
                     if (i == path.size() - 2) {
                         drawArrowHead(canvas, paint, startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
                     }
-
                 }
-
-
             }
         }
     }
 
-    private void drawArrowHead(Canvas canvas, Paint paint, float startX, float startY, float endX, float endY) {
+    private void showDistanceTimeBox(final String distanceText, final String timeText) {
+        // Dismiss any existing PopupWindow
+        dismissDistanceTimeBox();
+
+        // Create a new PopupWindow
+        popupWindow = new PopupWindow(getContext());
+
+        // Set the custom layout for the PopupWindow
+        View popupView = LayoutInflater.from(getContext()).inflate(R.layout.distance_time_popup, null);
+        popupWindow.setContentView(popupView);
+
+        // Find TextViews inside the custom layout
+        final TextView distanceTextView = popupView.findViewById(R.id.distanceTextView);
+        final TextView timeTextView = popupView.findViewById(R.id.timeTextView);
+
+        // Set the distance and time texts
+        distanceTextView.setText("Distance: " + distanceText);
+        timeTextView.setText("Time: " + timeText);
+
+        // Set the width and height of the PopupWindow
+        popupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+
+        // Set focusable and background drawable (using the custom background)
+        popupWindow.setFocusable(false); // Prevent losing focus
+        popupWindow.setOutsideTouchable(false); // Prevent dismissing when clicking outside
+
+        // Calculate position for the left-down corner
+        int offsetX = 0; // Distance from left edge of the screen
+        int offsetY = getWindowHeight() - popupWindow.getHeight(); // Distance from bottom of the screen
+
+        // Show the PopupWindow at the calculated position
+        popupWindow.showAtLocation(this, Gravity.NO_GRAVITY, offsetX, offsetY);
+    }
+
+    private void dismissDistanceTimeBox() {
+        if (popupWindow != null && popupWindow.isShowing()) {
+            popupWindow.dismiss();
+            popupWindow = null;
+        }
+    }
+
+
+
+
+    // Helper method to get the height of the screen
+    private int getWindowHeight() {
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        return size.y;
+    }
+
+
+
+
+
+    private void drawArrowHead(@NonNull Canvas canvas, Paint paint, float startX, float startY, float endX, float endY) {
         float arrowSize = 30; // Size of the arrowhead
 
         float angle = (float) Math.atan2(endY - startY, endX - startX);
@@ -321,10 +403,14 @@ public class DrawingView extends View {
         arrowY = (float) (endY - arrowSize * Math.sin(angle + Math.PI / 6));
 
         canvas.drawLine(endX, endY, arrowX, arrowY, paint);
+
+        //showDistanceTimeBox(String.valueOf(distance), String.valueOf(distance / 100));
+        //setDistanceandCalculateTime((int) distance);
+
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
                 lastTouchX = event.getX();
@@ -371,6 +457,8 @@ public class DrawingView extends View {
         return true;
     }
 
+
+
     private void checkButtonPress(float touchX, float touchY) {
         if (nodes == null) {
             return; // Exit the method if nodes are not initialized
@@ -390,7 +478,8 @@ public class DrawingView extends View {
             if ((distance <= 25) && (nodes[i].getFloor() == floorwelookat)) {
                 // Green dot/button pressed, handle accordingly
                 // For now, let's just show a message
-                showPopUpMessage(nodes[i].getroomnr());
+                //showPopUpMessage(nodes[i].getroomnr());
+                showPopUpMessage(String.valueOf(nodes[i].getroomnr()));
 
                 // Show the pop-up menu
                 showNodePopupMenu(i, touchX, touchY);
@@ -473,9 +562,6 @@ public class DrawingView extends View {
 
 
 
-
-
-
     private float calculateDistance(MotionEvent event) {
         float dx = event.getX(0) - event.getX(1);
         float dy = event.getY(0) - event.getY(1);
@@ -554,11 +640,5 @@ public class DrawingView extends View {
 
         invalidate();
     }
-
-
-//    public interface MainActivityListener {
-//        void newstartlocation(String position);
-//        void newendlocation(String position);
-//    }
 
 }

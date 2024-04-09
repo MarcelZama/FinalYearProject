@@ -156,35 +156,36 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Distance and Time Layout -->
     <LinearLayout
-        android:id="@+id/distanceTimeLayout"
-        android:layout_width="wrap_content"
+        android:id="@+id/distanceTimeBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/background_rounded">
+        android:gravity="center_horizontal"
+        android:padding="16dp"
+        android:background="@android:color/white"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/distanceTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Distance: "
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:layout_marginBottom="4dp"/>
+            android:text="Distance:"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/timeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Aprpx. Time: "
-            android:textColor="@android:color/white"
-            android:textSize="14sp"/>
+            android:text="Time:"
+            android:visibility="gone" />
 
     </LinearLayout>
+
+
+
+
+
 
 </RelativeLayout>

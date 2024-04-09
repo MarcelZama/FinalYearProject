@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -90,6 +91,12 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawingView drawingView;
 
+    private static int distanceCost = 0;
+    private TextView distanceTextView;
+    private TextView timeTextView;
+
+
+
 
     protected void newstartlocation(String position) {
         startlocation = position;
@@ -117,6 +124,17 @@ public class MainActivity extends AppCompatActivity {
         submitButton = findViewById(R.id.submitButton);
 
         dynamicEditTextsLayout = findViewById(R.id.dynamicEditTextsLayout); // Initialize the layout
+
+
+        // Initialize TextViews
+        distanceTextView = findViewById(R.id.distanceTextView);
+        timeTextView = findViewById(R.id.timeTextView);
+        //drawingView = findViewById(R.id.drawingView);
+
+        //DrawingView.setDistanceandCalculateTime(distanceCost, distanceTextView, timeTextView);
+
+
+
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -395,6 +413,12 @@ public class MainActivity extends AppCompatActivity {
             // Update DrawingView with the new path
             DrawingView drawingView = findViewById(R.id.drawingView);
             drawingView.setPathForLine(newpath);
+
+
+            drawingView.setDistanceTimeTextViews(distanceTextView,timeTextView);
+            drawingView.setDistanceandCalculateTime(distanceCost);
+
+
         } else {
             System.out.println("Invalid Input");
         }
@@ -518,6 +542,10 @@ public class MainActivity extends AppCompatActivity {
                 newpath = current.path; // Assign the current Path to global path to send it into DrawingView
                 System.out.println("Path from " + start + " to " + goal + ": " + current.path);
                 System.out.println("Total Cost: " + current.cost);
+
+                distanceCost = current.cost;
+                //DrawingView.setDistanceandCalculateTime(current.cost);
+
                 return;
             }
 
