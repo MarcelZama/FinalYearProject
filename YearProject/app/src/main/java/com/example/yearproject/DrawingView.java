@@ -254,23 +254,24 @@ public class DrawingView extends View {
     }
 
     @Override
-    protected void onDraw(@NotNull Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         // Draw the image
         canvas.drawBitmap(image, matrix, null);
 
-        //Paint paint = new Paint();
         paint.setColor(getResources().getColor(android.R.color.holo_green_dark));
         paint.setStyle(Paint.Style.FILL);
 
+        if ( (startNodeId!=0) && (endNodeId!=0 ))
+        {
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! THE startnode is " + startNodeId + " endnode is " + endNodeId);
+        }
         if (nodes != null) {
             for (int i = 0; i < nodes.length; i++) {
-                //if (i < nodes.length) {
-                float[] canvasPosition = {nodes[i].getX(), nodes[i].getY()};
+                float[] canvasPosition = {(float) (nodes[i].getX()),(float) (nodes[i].getY() )};
                 matrix.mapPoints(canvasPosition);
                 if (nodes[i].getFloor() == floorwelookat) {
-
 
                     if (i == startNodeId) {
                         paint.setColor(getResources().getColor(android.R.color.holo_blue_dark));
@@ -280,57 +281,63 @@ public class DrawingView extends View {
                         paint.setColor(getResources().getColor(android.R.color.holo_green_dark));
                     }
 
-                    /*----> This is the green Dot Draw */
-                    canvas.drawCircle(canvasPosition[0], canvasPosition[1], 25, paint); // Draw Nodes
+                    canvas.drawCircle(canvasPosition[0], canvasPosition[1], 25, paint);
 
-                    // Draw the ID text on top of the green dot
-                    paint2.setColor(getResources().getColor(android.R.color.black)); // Set text color
-                    //paint2.setTextSize(40); // Set text size
-                    paint2.setTextSize(30); // Set text size
-
-//                    if (!nodes[i].getroomnr().equals("-1") && !nodes[i].getroomnr().equals("0")) {
-//                        canvas.drawText(String.valueOf(nodes[i].getroomnr()), canvasPosition[0], canvasPosition[1], paint2);
-//                    }
+                    paint2.setColor(getResources().getColor(android.R.color.black));
+                    paint2.setTextSize(30);
 
                     canvas.drawText(String.valueOf(nodes[i].getId()), canvasPosition[0], canvasPosition[1], paint2);
                 }
-                //}
             }
         }
 
-        // Draw the line between shortest path nodes
         if (path != null && path.size() >= 2) {
-            paint.setColor(getResources().getColor(android.R.color.holo_blue_dark)); // Set line color
-            paint.setStrokeWidth(10); // Set line width
+            paint.setColor(getResources().getColor(android.R.color.holo_blue_dark));
+            paint.setStrokeWidth(10);
+
 
             for (int i = 0; i < path.size() - 1; i++) {
+
+                System.out.println(i + " node is : " + path.get(i));
+                System.out.println("My X is :" + nodes[path.get(i)].getX());
+                System.out.println("My Y is :" + nodes[path.get(i)].getY());
+
+                //System.out.println("1!!! Fisrt :" + path.get( i ) + " / Second: " +  path.get( i + 1 ));
+
+            }
+
+            for (int i = 0; i < path.size() - 1; ++i) {
                 int first = path.get(i);
                 int second = path.get(i + 1);
+                System.out.println("First: " + first + " / Second: " +  second);
 
-                // Draw go_upstairs bitmap
-                drawGoUpstairsBitmap(canvas, first, second);
+                // Ensure the nodes are on the same floor and are the intended nodes
+                if (nodes[first].getFloor() == floorwelookat && nodes[second].getFloor() == floorwelookat
+                        && first == path.get(i) && second == path.get(i + 1)) {
 
-                // Draw go_down bitmap
-                drawGoDownBitmap(canvas, first, second);
-
-                // Draw the line only if the floor matches the current floorwelookat
-                if (nodes[first].getFloor() == floorwelookat && nodes[second].getFloor() == floorwelookat) {
-                    // Transform node coordinates using the matrix
                     float[] startPoint = {nodes[first].getX(), nodes[first].getY()};
                     matrix.mapPoints(startPoint);
                     float[] endPoint = {nodes[second].getX(), nodes[second].getY()};
                     matrix.mapPoints(endPoint);
 
+
                     canvas.drawLine(startPoint[0], startPoint[1], endPoint[0], endPoint[1], paint);
 
-                    // Draw arrowhead at the end of the last line
                     if (i == path.size() - 2) {
                         drawArrowHead(canvas, paint, startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
                     }
+                } else {
+                    Log.d("Path", "Nodes on different floors or incorrect nodes: " + nodes[first].getId() + " -> " + nodes[second].getId());
                 }
             }
         }
+
     }
+
+
+
+
+
 
     private void showDistanceTimeBox(final String distanceText, final String timeText) {
         // Dismiss any existing PopupWindow
@@ -469,17 +476,21 @@ public class DrawingView extends View {
         Matrix inverse = new Matrix();
         matrix.invert(inverse);
 
-        float[] touchPoint = {touchX, touchY};
+        float[] touchPoint = { touchX, touchY};
         inverse.mapPoints(touchPoint);
+
+        //showPopUpMessage((float) (touchX /2.40) + " / " + (float) (touchY/2.40));
+        //showPopUpMessage((float) (touchX - 400) + " / " + (float) (touchY+ 100));
+        //showPopUpMessage((touchX) + " / " + (touchY));
 
         for (int i = 0; i < nodes.length; i++) {
             float distance = (float) Math.abs(Math.sqrt(Math.pow((touchPoint[0]) - nodes[i].getX(), 2) + Math.pow((touchPoint[1]) - nodes[i].getY(), 2)));
 
-            if ((distance <= 25) && (nodes[i].getFloor() == floorwelookat)) {
+            if ((distance <= 20) && (nodes[i].getFloor() == floorwelookat)) {
                 // Green dot/button pressed, handle accordingly
                 // For now, let's just show a message
                 //showPopUpMessage(nodes[i].getroomnr());
-                showPopUpMessage(String.valueOf(nodes[i].getroomnr()));
+                showPopUpMessage(String.valueOf(nodes[i].getId()));
 
                 // Show the pop-up menu
                 showNodePopupMenu(i, touchX, touchY);

@@ -84,10 +84,10 @@ public class MainActivity extends AppCompatActivity {
     private Button submitButton;
     private LinearLayout dynamicEditTextsLayout;
     private boolean isInputBoxAdded = false;
-    private static String startlocation,endlocation;
+    private static String startlocation, endlocation;
     private Button buttonImage1, buttonImage2, buttonImage3;
 
-    private int floor0[],floor1[],floor2[]; // <------ keep the path for each floor separated
+    private int floor0[], floor1[], floor2[]; // <------ keep the path for each floor separated
 
     private DrawingView drawingView;
 
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView distanceTextView;
     private TextView timeTextView;
 
-
+    private static final int FLOOR_CHANGE_PENALTY = 10;
 
 
     protected void newstartlocation(String position) {
@@ -134,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
         //DrawingView.setDistanceandCalculateTime(distanceCost, distanceTextView, timeTextView);
 
 
-
-
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
 //                        endlocation = endlocation.substring(1);
 //                    }
                     // Lower case the inputs for easier navigation and error bypass
-                    if ((Character.isLetter(endlocation.charAt(0))) && (Character.isLetter(endlocation.charAt(1)))){
+                    if ((Character.isLetter(endlocation.charAt(0))) && (Character.isLetter(endlocation.charAt(1)))) {
                         // Remove the first character if it's a letter
                         endlocation = endlocation.toLowerCase();
                     }
@@ -256,12 +254,12 @@ public class MainActivity extends AppCompatActivity {
                     String secondName = snapshot.child("SecondName").getValue(String.class);
 
                     //Node node = new Node(Integer.parseInt(nodeid),floor,locationX, locationY,roomNr,secondName);
-                    Node node = new Node(Integer.parseInt(nodeid),floor,locationX, locationY,roomNrString,secondName);
+                    Node node = new Node(Integer.parseInt(nodeid), floor, locationX, locationY, roomNrString, secondName);
                     nodeCoordinates[index] = node;
                     index++;
 
                     // Print the retrieved data (you can perform further processing here)
-                    System.out.println("My ID IS : -->> " + nodeid +"Floor : " + floor + ", locationX: " + locationX + ", locationY: " + locationY + ", roomNr: " + roomNr + ", secondName: " + secondName);
+                    System.out.println("My ID IS : -->> " + nodeid + "Floor : " + floor + ", locationX: " + locationX + ", locationY: " + locationY + ", roomNr: " + roomNr + ", secondName: " + secondName);
 
 
                 }
@@ -282,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     ///////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     //Just an output to test if the inputted data is inputted
@@ -345,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
                         // Set start location in DrawingView
                         drawingView.setStartLocation(startlocation);
                         startlocation = String.valueOf(drawingView.changeStartandFinish(startlocation));
-                        System.out.println("After I come back I am : " + startlocation );
+                        System.out.println("After I come back I am : " + startlocation);
 
                         performAStarAlgorithm();
                     } else {
@@ -394,28 +393,20 @@ public class MainActivity extends AppCompatActivity {
         floor1 = null;
         floor2 = null;
 
-//        if((Integer.valueOf(startlocation) != -1) && (Integer.valueOf(endlocation) != -1) )
-//        {
-//            aStarSearch(joinedGraph, Integer.valueOf(startlocation), Integer.valueOf(endlocation));
-//
-//            // Update DrawingView with the new path
-//            DrawingView drawingView = findViewById(R.id.drawingView);
-//            drawingView.setPathForLine(newpath);
-//        }
-//        else
-//        {
-//            System.out.println("Invalid Input");
-//        }
-
         if (!startlocation.isEmpty() && !endlocation.isEmpty()) {
             aStarSearch(joinedGraph, Integer.valueOf(startlocation), Integer.valueOf(endlocation));
+
+            for (int i = 0; i < newpath.size() - 1; i++) {
+                System.out.println("WAII " + i + " node is : " + newpath.get(i));
+
+            }
 
             // Update DrawingView with the new path
             DrawingView drawingView = findViewById(R.id.drawingView);
             drawingView.setPathForLine(newpath);
 
 
-            drawingView.setDistanceTimeTextViews(distanceTextView,timeTextView);
+            drawingView.setDistanceTimeTextViews(distanceTextView, timeTextView);
             drawingView.setDistanceandCalculateTime(distanceCost);
 
 
@@ -432,9 +423,9 @@ public class MainActivity extends AppCompatActivity {
         // Reverse edges by swapping source and destination
         for (int i = 0; i < connectionsGraph.vertices; i++) {
             for (Edge edge : connectionsGraph.adjacencylist[i]) {
-                if(edge.reversed == 1) // If said to be reversed reverse
+                if (edge.reversed == 1) // If said to be reversed reverse
                 {
-                    reversedGraph.addEdge(edge.destination, i, edge.weight, edge.reversed );
+                    reversedGraph.addEdge(edge.destination, i, edge.weight, edge.reversed);
                 }
             }
         }
@@ -479,6 +470,16 @@ public class MainActivity extends AppCompatActivity {
             this.destination = destination;
             this.weight = weight;
             this.reversed = reversed;
+        }
+    }
+
+    // Method to print edges in a readable format
+    private static void printEdges(List<Edge> edges) {
+        for (Edge edge : edges) {
+            System.out.println("Source: " + edge.source +
+                    ", Destination: " + edge.destination +
+                    ", Weight: " + edge.weight +
+                    ", Reversed: " + edge.reversed);
         }
     }
 
@@ -555,6 +556,13 @@ public class MainActivity extends AppCompatActivity {
                 for (Edge neighbor : graph.adjacencylist[current.vertex]) {
                     if (!visited[neighbor.destination]) {
                         int newCost = current.cost + neighbor.weight;
+
+                        // Handle floor changes
+                        if (graph.adjacencylist[current.vertex].get(0).reversed == 1) {
+                            // Add a penalty for changing floors
+                            newCost += FLOOR_CHANGE_PENALTY;
+                        }
+
                         priorityQueue.add(new AStarNode(neighbor.destination, newCost, current.path));
                     }
                 }
