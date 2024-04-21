@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentTop="true"
-        android:background="@color/purple"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="8dp"
@@ -33,16 +32,17 @@
         <EditText
             android:id="@+id/editText"
             android:layout_width="300dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:background="@color/lavender"
             android:hint="GO TO ->"
             android:paddingStart="12dp"
             android:paddingTop="8dp"
             android:paddingEnd="12dp"
             android:paddingBottom="8dp"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:background="@drawable/edit_text_background" />
+
 
         <!-- Submit Button -->
         <Button
@@ -50,8 +50,8 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="Submit"
-            android:background="@color/lavender"
-            android:textColor="@android:color/white"
+            android:background="@color/white"
+            android:textColor="@android:color/black"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
             android:layout_marginStart="8dp" />
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_below="@id/topLayout"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="0dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp" />
 

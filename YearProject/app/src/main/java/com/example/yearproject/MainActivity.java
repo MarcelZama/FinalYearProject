@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     // 5. Work on Paul's Idea // Worth it??
     // 6. Store the website on python anywhere //Done
 
-    // 7. Finish the Distance and Time display when Algorithm finish work to display the box 
+    // 7. Finish the Distance and Time display when Algorithm finish work to display the box
 
     //Notes:
     // I think Ive done a big mistake , some rooms like the gym and sports hall do not have a room nr , but the algorithm works based on room nr

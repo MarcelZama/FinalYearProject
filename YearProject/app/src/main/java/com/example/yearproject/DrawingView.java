@@ -180,7 +180,19 @@ public class DrawingView extends View {
         invalidate(); // Redraw the view
     }
 
+    public String givemename(int position)
+    {
+        if((!nodes[position].getname().equals("0")) && (!nodes[position].getname().equals("-1")))
+        {
+            return nodes[position].getname();
+        }
+        else if((!nodes[position].getroomnr().equals("0")) && (!nodes[position].getroomnr().equals("0")))
+        {
+            return nodes[position].getroomnr();
+        }
 
+        return "Random_Spot";
+    }
     //Get Node id
     public int changeStartandFinish(String position)
     {
@@ -227,32 +239,6 @@ public class DrawingView extends View {
     }
 
 
-
-
-    private void drawGoDownBitmap(Canvas canvas, int first, int second) {
-        if (nodes[first].getroomnr().equals("-1") &&
-                nodes[second].getroomnr().equals("-1") &&
-                (nodes[first].getFloor() > nodes[second].getFloor()) &&
-                (floorwelookat == nodes[first].getFloor())) {
-            // Draw go_down.png
-            float[] downstairsPosition = {(nodes[first].getX() - 10), (nodes[first].getY()- 10)};
-            matrix.mapPoints(downstairsPosition);
-            canvas.drawBitmap(goDownBitmap, downstairsPosition[0], downstairsPosition[1], null);
-        }
-    }
-
-    private void drawGoUpstairsBitmap(Canvas canvas, int first, int second) {
-        if (nodes[first].getroomnr().equals("-1") &&
-                nodes[second].getroomnr().equals("-1") &&
-                (nodes[first].getFloor() < nodes[second].getFloor()) &&
-                (floorwelookat == nodes[first].getFloor())) {
-            // Draw go_upstairs.png
-            float[] upstairsPosition = {(nodes[first].getX()- 10), (nodes[first].getY()- 10)};
-            matrix.mapPoints(upstairsPosition);
-            canvas.drawBitmap(goUpstairsBitmap, upstairsPosition[0], upstairsPosition[1], null);
-        }
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -263,13 +249,10 @@ public class DrawingView extends View {
         paint.setColor(getResources().getColor(android.R.color.holo_green_dark));
         paint.setStyle(Paint.Style.FILL);
 
-        if ( (startNodeId!=0) && (endNodeId!=0 ))
-        {
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! THE startnode is " + startNodeId + " endnode is " + endNodeId);
-        }
+        // PRINT NODES
         if (nodes != null) {
             for (int i = 0; i < nodes.length; i++) {
-                float[] canvasPosition = {(float) (nodes[i].getX()),(float) (nodes[i].getY() )};
+                float[] canvasPosition = {(float) (nodes[i].getX()), (float) (nodes[i].getY())};
                 matrix.mapPoints(canvasPosition);
                 if (nodes[i].getFloor() == floorwelookat) {
 
@@ -286,34 +269,29 @@ public class DrawingView extends View {
                     paint2.setColor(getResources().getColor(android.R.color.black));
                     paint2.setTextSize(30);
 
-                    canvas.drawText(String.valueOf(nodes[i].getId()), canvasPosition[0], canvasPosition[1], paint2);
+                    //canvas.drawText(String.valueOf(nodes[i].getId()), canvasPosition[0], canvasPosition[1], paint2);
+                    if ((!nodes[i].getroomnr().equals("-1")) && (!nodes[i].getroomnr().equals("0"))) {
+                        canvas.drawText(String.valueOf(nodes[i].getroomnr()), canvasPosition[0], canvasPosition[1], paint2);
+                    }
+                    if ((!nodes[i].getname().equals("-1")) && (!nodes[i].getname().equals("0"))) {
+                        canvas.drawText(String.valueOf(nodes[i].getname()), canvasPosition[0] - 70, canvasPosition[1] + 50, paint2);
+                    }
                 }
             }
         }
 
+        // DRAW LINE
         if (path != null && path.size() >= 2) {
             paint.setColor(getResources().getColor(android.R.color.holo_blue_dark));
             paint.setStrokeWidth(10);
 
 
-            for (int i = 0; i < path.size() - 1; i++) {
-
-                System.out.println(i + " node is : " + path.get(i));
-                System.out.println("My X is :" + nodes[path.get(i)].getX());
-                System.out.println("My Y is :" + nodes[path.get(i)].getY());
-
-                //System.out.println("1!!! Fisrt :" + path.get( i ) + " / Second: " +  path.get( i + 1 ));
-
-            }
-
             for (int i = 0; i < path.size() - 1; ++i) {
                 int first = path.get(i);
                 int second = path.get(i + 1);
-                System.out.println("First: " + first + " / Second: " +  second);
 
                 // Ensure the nodes are on the same floor and are the intended nodes
-                if (nodes[first].getFloor() == floorwelookat && nodes[second].getFloor() == floorwelookat
-                        && first == path.get(i) && second == path.get(i + 1)) {
+                if (nodes[first].getFloor() == floorwelookat && nodes[second].getFloor() == floorwelookat && first == path.get(i) && second == path.get(i + 1)) {
 
                     float[] startPoint = {nodes[first].getX(), nodes[first].getY()};
                     matrix.mapPoints(startPoint);
@@ -326,13 +304,49 @@ public class DrawingView extends View {
                     if (i == path.size() - 2) {
                         drawArrowHead(canvas, paint, startPoint[0], startPoint[1], endPoint[0], endPoint[1]);
                     }
-                } else {
-                    Log.d("Path", "Nodes on different floors or incorrect nodes: " + nodes[first].getId() + " -> " + nodes[second].getId());
                 }
+                else if ((nodes[first].getroomnr().equals("-1")) && (nodes[first].getFloor() == 0) && (floorwelookat == 0)) {
+                    if ((nodes[second].getroomnr().equals("-1")) && (nodes[second].getFloor() == 1)) {
+                        // Draw go_upstairs.png
+                        System.out.println("Draw go_upstairs.png");
+                        float[] upstairsPosition = {(nodes[first].getX() - 40), (nodes[first].getY() - 40)};
+                        matrix.mapPoints(upstairsPosition);
+                        canvas.drawBitmap(goUpstairsBitmap, upstairsPosition[0], upstairsPosition[1], null);
+                    }
+                }
+                else if ((nodes[first].getroomnr().equals("-1")) && (nodes[first].getFloor() == 1) && (floorwelookat == 1)) {
+                    if ((nodes[second].getroomnr().equals("-1")) && (nodes[second].getFloor() == 2)) {
+                        // Draw go_upstairs.png
+                        System.out.println("Draw go_upstairs.png");
+                        float[] upstairsPosition = {(nodes[first].getX() - 40), (nodes[first].getY() - 40)};
+                        matrix.mapPoints(upstairsPosition);
+                        canvas.drawBitmap(goUpstairsBitmap, upstairsPosition[0], upstairsPosition[1], null);
+                    }
+                }
+                else if ((nodes[first].getroomnr().equals("-1")) && (nodes[first].getFloor() == 2) && (floorwelookat == 2)) {
+                    if ((nodes[second].getroomnr().equals("-1")) && (nodes[second].getFloor() == 1)) {
+                        // Draw go_down.png
+                        System.out.println("Draw go_down.png");
+                        float[] downstairsPosition = {nodes[second].getX() - 40, nodes[second].getY() - 40};
+                        matrix.mapPoints(downstairsPosition);
+                        canvas.drawBitmap(goDownBitmap, downstairsPosition[0], downstairsPosition[1], null);
+                    }
+                }
+                else if ((nodes[first].getroomnr().equals("-1")) && (nodes[first].getFloor() == 1) && (floorwelookat == 1)) {
+                    if ((nodes[second].getroomnr().equals("-1")) && (nodes[second].getFloor() == 0)) {
+                        // Draw go_down.png
+                        System.out.println("Draw go_down.png 222222222222222");
+                        float[] downstairsPosition = {nodes[second].getX() - 40, nodes[second].getY() - 40};
+                        matrix.mapPoints(downstairsPosition);
+                        canvas.drawBitmap(goDownBitmap, downstairsPosition[0], downstairsPosition[1], null);
+                    }
+                }
+
             }
         }
 
     }
+
 
 
 
@@ -355,8 +369,8 @@ public class DrawingView extends View {
         final TextView timeTextView = popupView.findViewById(R.id.timeTextView);
 
         // Set the distance and time texts
-        distanceTextView.setText("Distance: " + distanceText);
-        timeTextView.setText("Time: " + timeText);
+        distanceTextView.setText("Distance: " + distanceText + " steps");
+        timeTextView.setText("Time: " + timeText + "min");
 
         // Set the width and height of the PopupWindow
         popupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
@@ -544,7 +558,7 @@ public class DrawingView extends View {
                 if (mainActivity != null) {
                     //mainActivity.newendlocation(nodes[endNodeId].getroomnr());
                     mainActivity.newendlocation(Integer.toString(endNodeId));
-                    if (mainActivity != null) {
+                    if ((mainActivity != null) && (startNodeId > 0)) {
                         mainActivity.performAStarAlgorithm();
                     } else {
                         Log.e("DrawingView", "MainActivity is null");
