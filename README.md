@@ -54,7 +54,7 @@ The Interactive Map of SETU Carlow is a dynamic, user-friendly application desig
 - Sync the project with Gradle files.
 - Build and run the application on an emulator or an Android device.
 
-##Usage
+### Usage
 1. **Launch the Application**:
 
 - Open the app on your device.
@@ -78,7 +78,7 @@ Contributions are welcome! If you would like to contribute to the project, pleas
 - Click the "Fork" button at the top of this repository.
 
 2. **Create a Branch**:
-   ```bash
+   ```bash 
    git checkout -b feature/your-feature-name
 3. **Make Your Changes**:
    
