@@ -55,17 +55,17 @@ The Interactive Map of SETU Carlow is a dynamic, user-friendly application desig
 - Build and run the application on an emulator or an Android device.
 
 ##Usage
-1. Launch the Application:
+1. **Launch the Application**:
 
 - Open the app on your device.
 - Allow location permissions if prompted.
   
-2. Explore the Campus:
+2. **Explore the Campus**:
 
 - Use the interactive map to navigate through the campus.
 - Use the search bar to find specific buildings or locations.
   
-3.Real-time Updates:
+3. **Real-time Updates**:
 
 - The map will automatically update with any changes or new points of interest added through Firebase.
 
@@ -73,26 +73,26 @@ The Interactive Map of SETU Carlow is a dynamic, user-friendly application desig
 
 Contributions are welcome! If you would like to contribute to the project, please follow these steps:
 
-1. Fork the Repository:
+1. **Fork the Repository**:
 
 - Click the "Fork" button at the top of this repository.
 
-2. Create a Branch:
+2. **Create a Branch**:
    ```bash
    git checkout -b feature/your-feature-name
-3. Make Your Changes:
+3. **Make Your Changes**:
    
 - Implement your feature or fix.
   
-4. Commit Your Changes:
+4. **Commit Your Changes**:
   ```bash
   git commit -m "Add feature: your feature name"
 
-5. Push to the Branch:
+5. **Push to the Branch**:
    ```bash
   git push origin feature/your-feature-name
 
-6.Open a Pull Request:
+6. **Open a Pull Request**:
 
 - Go to the repository in GitHub and click "New Pull Request".
 
