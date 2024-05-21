@@ -69,7 +69,7 @@ The Interactive Map of SETU Carlow is a dynamic, user-friendly application desig
 
 - The map will automatically update with any changes or new points of interest added through Firebase.
 
-##Contribution
+## Contribution
 
 Contributions are welcome! If you would like to contribute to the project, please follow these steps:
 
@@ -85,21 +85,21 @@ Contributions are welcome! If you would like to contribute to the project, pleas
 - Implement your feature or fix.
   
 4. **Commit Your Changes**:
-  ```bash
-  git commit -m "Add feature: your feature name"
+   ```bash
+   git commit -m "Add feature: your feature name"
 
 5. **Push to the Branch**:
    ```bash
-  git push origin feature/your-feature-name
+   git push origin feature/your-feature-name
 
 6. **Open a Pull Request**:
 
 - Go to the repository in GitHub and click "New Pull Request".
 
-License
+## License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-Contact
+## Contact
 For any inquiries or feedback, please contact Marcel Zama at MarcelZama@outlook.com.
 
 ___________________________________________________________________________________________________
